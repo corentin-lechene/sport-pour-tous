@@ -1,0 +1,16 @@
+export class UserService {
+// getAll()
+// getById(userId)
+// getByEmail(email)
+// create(email, password, firstName, lastName)
+// delete(userId)
+// updateInfo(userId, firstName, lastName, address, phone)
+// updateFavoriteActivities(userId, activities)
+// updatePassword(userId, password)
+// subscribeToSession(userId, sessionId)
+// unsubscribeToSession(userId, sessionId)
+// getAllSessions(userId)
+// getAllInvoices(userId)
+// getAllGuarantees(userId)
+    // getAllTrackingFolders(userId)
+}
