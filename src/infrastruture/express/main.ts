@@ -14,31 +14,7 @@ export async function start_express() {
     app.use(express.json());
 
     // logs
-    app.use((req, res, next) => {
-        const logger = new LoggerService(new ConsoleLogger());
-
-        const time = dayjs().format("YYYY-MM-DD HH:mm:ss:SSS");
-        const method = req.method;
-        const route = req.originalUrl;
-
-        logger.log(`${time} - [${method}]~${route} => requested`);
-
-        res.on('finish', () => (req: express.Request, res: express.Response) => {
-            const logger = new LoggerService(new ConsoleLogger());
-            const time = dayjs().format("YYYY-MM-DD HH:mm:ss:SSS");
-            const method = req.method;
-            const route = req.originalUrl;
-
-            const logMessage = `${time} - [${method}]~${route} => ${res.statusCode}`;
-            if (res.locals.routeNotExists as boolean) {
-                logger.error(logMessage);
-            } else {
-                logger.success(logMessage);
-            }
-        });
-
-        next();
-    });
+    app.use(loggerMiddleware());
 
     // test
     app.get("/ping", (_, res) => res.send("pong"));
@@ -58,4 +34,34 @@ export async function start_express() {
     app.listen(PORT, async () => {
         console.log(`Server started on http://localhost:${PORT}/`);
     });
+}
+
+export function loggerMiddleware(): express.RequestHandler {
+    return (req, res, next) => {
+        const logger = new LoggerService(new ConsoleLogger());
+
+        const time = dayjs().format("YYYY-MM-DD HH:mm:ss:SSS");
+        const method = req.method;
+        const route = req.originalUrl;
+
+        logger.log(`${time} - [${method}]~${route} => requested`);
+
+        res.on('finish', () => onFinishMiddleware(req, res));
+
+        next();
+    }
+}
+
+function onFinishMiddleware(req: express.Request, res: express.Response) {
+    const logger = new LoggerService(new ConsoleLogger());
+    const time = dayjs().format("YYYY-MM-DD HH:mm:ss:SSS");
+    const method = req.method;
+    const route = req.originalUrl;
+
+    const logMessage = `${time} - [${method}]~${route} => ${res.statusCode}`;
+    if (res.locals.routeNotExists as boolean) {
+        logger.error(logMessage);
+    } else {
+        logger.success(logMessage);
+    }
 }

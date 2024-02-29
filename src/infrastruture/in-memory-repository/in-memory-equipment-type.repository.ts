@@ -9,12 +9,20 @@ import {
 export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository {
     private _equipmentTypes: EquipmentType[] = [];
 
-    async fetchAll(): Promise<EquipmentType[]> {
-        return this._equipmentTypes;
+    async getAll(): Promise<EquipmentType[]> {
+        return this._equipmentTypes.filter(equipmentType => !equipmentType.deletedAt);
     }
 
-    async fetchById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType> {
+    async getById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType> {
         const equipmentType = this._equipmentTypes.find(equipmentType => equipmentType.id.value === equipmentTypeId.value);
+        if (!equipmentType) {
+            throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
+        }
+        return equipmentType;
+    }
+
+    async getByName(name: string): Promise<EquipmentType> {
+        const equipmentType = this._equipmentTypes.find(equipmentType => equipmentType.name === name);
         if (!equipmentType) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
@@ -39,6 +47,6 @@ export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository 
         if (index === -1) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
-        this._equipmentTypes.splice(index, 1);
+        this._equipmentTypes[index].deletedAt = new Date();
     }
 }

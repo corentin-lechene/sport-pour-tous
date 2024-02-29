@@ -1,8 +1,9 @@
 import {EquipmentType, EquipmentTypeId} from "./equipment-type.model";
 
 export interface EquipmentTypeRepository {
-    fetchAll(): Promise<EquipmentType[]>;
-    fetchById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType>;
+    getAll(): Promise<EquipmentType[]>;
+    getById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType>;
+    getByName(name: string): Promise<EquipmentType>;
     create(equipmentType: EquipmentType): Promise<EquipmentType>;
     update(equipmentTypeId: EquipmentTypeId, equipmentType: EquipmentType): Promise<void>;
     delete(id: EquipmentTypeId): Promise<void>;

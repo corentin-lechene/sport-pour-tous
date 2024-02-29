@@ -2,6 +2,12 @@ import {EquipmentTypeService} from "../../../../application/equipment/equipmentT
 import {RequestHandler} from "express";
 import {EquipmentTypeId} from "../../../../domain/equipment/equipmentType/equipment-type.model";
 import {CreateEquipmentTypeDto} from "./create-equipment-type.dto";
+import {
+    EquipmentTypeException
+} from "../../../../application/equipment/equipmentType/exception/equipment-type.exception";
+import {
+    EquipmentTypeMessageError
+} from "../../../../application/equipment/equipmentType/exception/equipment-type.message-error";
 
 export class EquipmentTypeController {
     constructor(private readonly equipmentTypeService: EquipmentTypeService) {
@@ -24,24 +30,26 @@ export class EquipmentTypeController {
                 const equipmentType = await this.equipmentTypeService.getById(new EquipmentTypeId(equipmentTypeId));
                 res.send(equipmentType);
             } catch(e) {
-                console.error(e);
-                res.status(404).end();
+                // console.error(e);
+                res.status(404).send();
             }
         }
     }
 
     async create(): Promise<RequestHandler> {
         return async (req, res) => {
+            console.log(req.body);
             const name = req.body.name as string;
             if(!name?.trim()) return res.status(400).end();
+
             const createEquipmentTypeDto = new CreateEquipmentTypeDto(name.trim());
 
             try {
                 const equipmentType = await this.equipmentTypeService.create(createEquipmentTypeDto.name);
                 res.status(201).send(equipmentType);
             } catch(e) {
-                console.error(e);
-                res.status(400).end();
+                console.log("e: ", e);
+                res.status(400).send(e);
             }
         }
     }

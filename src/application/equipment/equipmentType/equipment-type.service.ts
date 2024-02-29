@@ -9,16 +9,29 @@ export class EquipmentTypeService {
     }
 
     async getAll(): Promise<EquipmentType[]> {
-        return this.equipmentTypeRepository.fetchAll();
+        return this.equipmentTypeRepository.getAll();
     }
 
     async getById(equipmentTypeId: EquipmentTypeId) {
-        return this.equipmentTypeRepository.fetchById(equipmentTypeId);
+        return this.equipmentTypeRepository.getById(equipmentTypeId);
     }
 
     async create(name: string): Promise<EquipmentType> {
         if (!name?.trim()) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.ALL_FIELDS_MUST_BE_FILL);
+        }
+
+        try {
+            const equipmentType = await this.equipmentTypeRepository.getByName(name.trim());
+            if(equipmentType) {
+                throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_ALREADY_EXISTS);
+            }
+        } catch(e) {
+            if(e instanceof EquipmentTypeException) {
+                if(e.message === EquipmentTypeMessageError.EQUIPMENT_TYPE_ALREADY_EXISTS) {
+                    throw e;
+                }
+            }
         }
 
         const newEquipmentType = new EquipmentType(name.trim());
