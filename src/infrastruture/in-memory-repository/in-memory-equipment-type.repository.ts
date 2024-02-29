@@ -5,16 +5,15 @@ import {
     EquipmentTypeMessageError
 } from "../../application/equipment/equipmentType/exception/equipment-type.message-error";
 
-
+const _equipmentTypes: EquipmentType[] = []
 export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository {
-    private _equipmentTypes: EquipmentType[] = [];
 
     async getAll(): Promise<EquipmentType[]> {
-        return this._equipmentTypes.filter(equipmentType => !equipmentType.deletedAt);
+        return _equipmentTypes.filter(equipmentType => !equipmentType.deletedAt);
     }
 
     async getById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType> {
-        const equipmentType = this._equipmentTypes.find(equipmentType => equipmentType.id.value === equipmentTypeId.value);
+        const equipmentType = _equipmentTypes.find(equipmentType => equipmentType.id.value === equipmentTypeId.value);
         if (!equipmentType) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
@@ -22,7 +21,7 @@ export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository 
     }
 
     async getByName(name: string): Promise<EquipmentType> {
-        const equipmentType = this._equipmentTypes.find(equipmentType => equipmentType.name === name);
+        const equipmentType = _equipmentTypes.find(equipmentType => equipmentType.name === name);
         if (!equipmentType) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
@@ -30,23 +29,23 @@ export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository 
     }
 
     async create(equipmentType: EquipmentType): Promise<EquipmentType> {
-        this._equipmentTypes.push(equipmentType);
+        _equipmentTypes.push(equipmentType);
         return equipmentType;
     }
 
     async update(equipmentTypeId: EquipmentTypeId, equipmentType: EquipmentType): Promise<void> {
-        const index = this._equipmentTypes.findIndex(_equipmentType => _equipmentType.id.value === equipmentTypeId.value);
+        const index = _equipmentTypes.findIndex(_equipmentType => _equipmentType.id.value === equipmentTypeId.value);
         if (index === -1) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
-        this._equipmentTypes[index] = equipmentType;
+        _equipmentTypes[index] = equipmentType;
     }
 
     async delete(id: EquipmentTypeId): Promise<void> {
-        const index = this._equipmentTypes.findIndex(equipmentType => equipmentType.id.value === id.value);
+        const index = _equipmentTypes.findIndex(equipmentType => equipmentType.id.value === id.value);
         if (index === -1) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
-        this._equipmentTypes[index].deletedAt = new Date();
+        _equipmentTypes[index].deletedAt = new Date();
     }
 }

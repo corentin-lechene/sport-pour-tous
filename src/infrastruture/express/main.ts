@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import * as dayjs from "dayjs";
 import {ConsoleLogger, LoggerService} from "../../common";
 import {EquipmentTypeRoute} from "./equipments/equipmentType/equipment-type.route";
+import {EquipmentRoute} from "./equipments/equipment.route";
 
 dotenv.config();
 
@@ -21,9 +22,10 @@ export async function start_express() {
 
     // all routes
     app.use(await EquipmentTypeRoute.getRoutes());
-
+    app.use(await EquipmentRoute.getRoutes());
 
     // populate for dev
+    // ...
 
     // undefined routes
     app.use((_, res) => {
