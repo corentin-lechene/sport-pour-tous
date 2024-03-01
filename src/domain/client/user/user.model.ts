@@ -1,6 +1,6 @@
 import {v4 as uuidv4} from "uuid";
 import {Email} from "../../../common/vo/email/email";
-import {PhoneNumber} from "../../../common/vo/phoneNumber";
+import {PhoneNumber} from "../../../common/vo/phoneNumber/phoneNumber";
 export class UserId {
     value: string;
 
