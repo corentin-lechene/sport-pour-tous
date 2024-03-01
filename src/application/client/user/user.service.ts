@@ -4,13 +4,16 @@ import {Email} from "../../../common/vo/email/email";
 import {UserException, UserMessageException} from "./user.exception";
 import {CreateUserDto} from "../../../infrastruture/express/client/user/create-user.dto";
 import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-user.dto";
+import {IInvoiceService} from "../invoice/invoice.service.interface";
 
 export class UserService {
 
     constructor(
-        private readonly userRepository: UserRepository
+        private readonly userRepository: UserRepository,
+        private readonly IInvoiceService: IInvoiceService,
     ) {
         this.userRepository = userRepository;
+        this.IInvoiceService = IInvoiceService;
     }
     async getAll(): Promise<User[]> {
         return this.userRepository.getAll();
@@ -74,17 +77,24 @@ export class UserService {
         await this.userRepository.updatePassword(userId, password);
     }
 
-// getAllInvoices(userId)
-// getAllGuarantees(userId)
 
 
-// subscribeToSession(userId, sessionId)
-// unsubscribeToSession(userId, sessionId)
+    async getAllInvoices(userId: UserId) {
+        const existUser = await this.userRepository.getById(userId);
+        if(!existUser) {
+            throw new UserException(UserMessageException.USER_NOT_FOUND)
+        }
+
+        return this.IInvoiceService.getByUser(userId);
+    }
+
+    // getAllGuarantees(userId)
+
+    // subscribeToSession(userId, sessionId)
+    // unsubscribeToSession(userId, sessionId)
 
 
-// updateFavoriteActivities(userId, activities)
-
-// getAllSessions(userId)
-
+    // updateFavoriteActivities(userId, activities)
+    // getAllSessions(userId)
     // getAllTrackingFolders(userId)
 }

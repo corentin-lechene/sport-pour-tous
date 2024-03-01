@@ -17,8 +17,6 @@ export class User {
     password: string;
     address: string;
     phoneNumber: string;
-
-    // todo : reflexion
     deletedAt?: Date;
     createdAt?: Date;
 

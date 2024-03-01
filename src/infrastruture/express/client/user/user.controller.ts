@@ -148,4 +148,20 @@ export class UserController {
             }
         }
     }
+
+    async getInvoices(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+            if (!userId?.trim()) return res.status(400).end();
+
+            try {
+                const invoices = await this.userService.getAllInvoices(new UserId(userId.trim()));
+                res.send(invoices);
+            } catch (e) {
+                res.status(404).send();
+            }
+        }
+    }
+
+
 }

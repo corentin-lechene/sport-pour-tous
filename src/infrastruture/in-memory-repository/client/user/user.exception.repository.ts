@@ -1,7 +1,5 @@
 export enum UserMessageExceptionRepository {
     USER_NOT_FOUND = 'User not found',
-    USER_UPDATED = 'User updated',
-    USER_DELETED = 'User deleted',
 }
 
 export class UserExceptionRepository extends Error {
@@ -9,7 +7,7 @@ export class UserExceptionRepository extends Error {
         const message = userMessageException.toString();
 
         super(message);
-        this.name = "UserException";
+        this.name = "UserExceptionRepository";
         this.message = message;
     }
 }
