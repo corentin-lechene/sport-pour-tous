@@ -1,5 +1,5 @@
 export enum EmailMessageException {
-    BAD_FORMAT = "L'email est au mauvais format !"
+    BAD_FORMAT = "Email is in bad format !"
 }
 
 export class EmailException extends Error {

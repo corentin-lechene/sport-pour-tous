@@ -1,5 +1,5 @@
 export enum PhoneNumberMessageException {
-    BAD_FORMAT = "Le numéro de téléphone est au mauvais format !"
+    BAD_FORMAT = "Phone number is in bad format !"
 }
 
 export class PhoneNumberException extends Error {

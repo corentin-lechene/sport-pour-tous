@@ -36,6 +36,30 @@ export class InMemoryUserRepository implements UserRepository {
         return user;
     }
 
+    async update(id: UserId, firstname: string, lastname: string, email: string, address: string, phoneNumber: string): Promise<User> {
+        const user = _users.find(user => user.id.value === id.value);
+        if (!user) {
+            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+        }
+
+        user.firstname = firstname;
+        user.lastname = lastname;
+        user.email = email;
+        user.address = address;
+        user.phoneNumber = phoneNumber;
+
+        return user;
+    }
+
+    async updatePassword(id: UserId, password: string): Promise<void> {
+        const user = _users.find(user => user.id.value === id.value);
+        if (!user) {
+            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+        }
+
+        user.password = password;
+    }
+
     async delete(id: UserId): Promise<void> {
         const user = _users.find(user => user.id.value === id.value);
         if (!user) {

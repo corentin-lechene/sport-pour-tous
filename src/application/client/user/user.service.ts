@@ -3,6 +3,7 @@ import {User, UserId} from "../../../domain/client/user/user.model";
 import {Email} from "../../../common/vo/email/email";
 import {UserException, UserMessageException} from "./user.exception";
 import {CreateUserDto} from "../../../infrastruture/express/client/user/create-user.dto";
+import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-user.dto";
 
 export class UserService {
 
@@ -45,13 +46,45 @@ export class UserService {
         return this.userRepository.delete(userId);
     }
 
-// updateInfo(userId, firstName, lastName, address, phone)
-// updateFavoriteActivities(userId, activities)
-// updatePassword(userId, password)
-// subscribeToSession(userId, sessionId)
-// unsubscribeToSession(userId, sessionId)
-// getAllSessions(userId)
+    async updateInfo(userId: UserId, updateUserDto: UpdateUserDto) {
+        if(!updateUserDto.email.getEmail.trim() || !updateUserDto.firstname.trim() || !updateUserDto.lastname.trim()
+            || !updateUserDto.phoneNumber.getPhoneNumber.trim() || !updateUserDto.address.trim()) {
+            throw new UserException(UserMessageException.ALL_FIELDS_MUST_BE_FILL);
+        }
+
+        const existUser = await this.userRepository.getById(userId);
+        if(!existUser) {
+            throw new UserException(UserMessageException.USER_NOT_FOUND)
+        }
+
+        return this.userRepository.update(userId, updateUserDto.firstname, updateUserDto.lastname,
+            updateUserDto.email.getEmail, updateUserDto.address, updateUserDto.phoneNumber.getPhoneNumber);
+
+    }
+
+
+    async updatePassword(userId: UserId, password: string) {
+        if(!password.trim()) throw new UserException(UserMessageException.PASSWORD_IS_MISSING)
+
+        const existUser = await this.userRepository.getById(userId);
+        if(!existUser) {
+            throw new UserException(UserMessageException.USER_NOT_FOUND)
+        }
+
+        await this.userRepository.updatePassword(userId, password);
+    }
+
 // getAllInvoices(userId)
 // getAllGuarantees(userId)
+
+
+// subscribeToSession(userId, sessionId)
+// unsubscribeToSession(userId, sessionId)
+
+
+// updateFavoriteActivities(userId, activities)
+
+// getAllSessions(userId)
+
     // getAllTrackingFolders(userId)
 }

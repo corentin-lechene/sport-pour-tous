@@ -16,20 +16,20 @@ export class User {
     email: string;
     password: string;
     address: string;
-    phone: string;
+    phoneNumber: string;
 
     // todo : reflexion
     deletedAt?: Date;
     createdAt?: Date;
 
 
-    constructor(firstname: string, lastname: string, email: Email, password: string, address: string, phone: PhoneNumber) {
+    constructor(firstname: string, lastname: string, email: Email, password: string, address: string, phoneNumber: PhoneNumber) {
         this.id = new UserId();
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email.getEmail;
         this.password = password;
         this.address = address; // todo : VO ??
-        this.phone = phone.getPhoneNumber;
+        this.phoneNumber = phoneNumber.getPhoneNumber;
     }
 }

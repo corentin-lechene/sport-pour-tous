@@ -17,6 +17,10 @@ export class UserRoute {
         router.post("/users", await userController.create());
         router.delete("/users/:userId", await userController.delete());
 
+        router.patch("/users/:userId", await userController.update());
+        router.patch("/users/password/:userId", await userController.updatePassword());
+
+
         // router.post("/users/subscribeSession/:userId", );
         // router.post("/users/unsubscribeSession/:userId", );
 

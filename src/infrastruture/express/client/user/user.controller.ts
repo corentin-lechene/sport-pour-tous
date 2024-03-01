@@ -7,6 +7,7 @@ import {CreateUserDto} from "./create-user.dto";
 import {PhoneNumber} from "../../../../common/vo/phoneNumber/phoneNumber";
 import {UserException} from "../../../../application/client/user/user.exception";
 import {PhoneNumberException} from "../../../../common/vo/phoneNumber/phoneNumber.exception";
+import {UpdateUserDto} from "./update-user.dto";
 
 export class UserController {
     constructor(private readonly userService: UserService) {
@@ -92,6 +93,57 @@ export class UserController {
                 await this.userService.delete(new UserId(userId.trim()));
                 res.status(204).end();
             } catch (e) {
+                res.status(404).send();
+            }
+        }
+    }
+
+    async update(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+
+            const firstname = req.body.firstname as string;
+            const lastname = req.body.lastname as string;
+            const email = req.body.email as string;
+            const address = req.body.address as string;
+            const phoneNumber = req.body.phoneNumber as string;
+
+            if (!userId?.trim() || !firstname?.trim() || !lastname?.trim() || !email?.trim() || !address?.trim() || !phoneNumber?.trim() ) {
+                return res.status(400).end();
+            }
+
+            try {
+                const updateUserDto = new UpdateUserDto(firstname, lastname, Email.of(email), address, PhoneNumber.of(phoneNumber));
+                const userUpdated = await this.userService.updateInfo(new UserId(userId.trim()), updateUserDto);
+
+                res.status(200).send(userUpdated);
+            } catch (e) {
+                if(e instanceof EmailException || e instanceof PhoneNumberException || e instanceof UserException) {
+                    res.statusMessage = e.message;
+                }
+
+                res.status(404).send();
+            }
+        }
+    }
+
+    async updatePassword(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+            const password = req.body.password as string;
+
+            if (!userId?.trim() || !password?.trim() ) {
+                return res.status(400).end();
+            }
+
+            try {
+                const userUpdated = await this.userService.updatePassword(new UserId(userId.trim()), password);
+                res.status(204).send(userUpdated);
+            } catch (e) {
+                if(e instanceof UserException) {
+                    res.statusMessage = e.message;
+                }
+
                 res.status(404).send();
             }
         }

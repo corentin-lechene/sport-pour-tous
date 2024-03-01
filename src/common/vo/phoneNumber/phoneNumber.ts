@@ -9,8 +9,6 @@ export class PhoneNumber {
         if(!PhoneNumber.isValid(phone)) {
             throw new PhoneNumberException(PhoneNumberMessageException.BAD_FORMAT);
         }
-
-        console.log("phone number okay");
         return new PhoneNumber(phone);
     }
 
