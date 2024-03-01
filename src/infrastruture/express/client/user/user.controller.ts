@@ -82,4 +82,18 @@ export class UserController {
             }
         }
     }
+
+    async delete(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+            if (!userId?.trim()) return res.status(400).end();
+
+            try {
+                await this.userService.delete(new UserId(userId.trim()));
+                res.status(204).end();
+            } catch (e) {
+                res.status(404).send();
+            }
+        }
+    }
 }

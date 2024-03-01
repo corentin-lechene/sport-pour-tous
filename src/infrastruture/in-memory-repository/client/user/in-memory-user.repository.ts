@@ -35,12 +35,12 @@ export class InMemoryUserRepository implements UserRepository {
         _users.push(user);
         return user;
     }
-    //
-    // async delete(id: UserId): Promise<void> {
-    //     const user = _users.find(user => user.id.value === id.value);
-    //     if (!user) {
-    //         throw new UserExceptionRepository(UserMessageException.USER_NOT_FOUND);
-    //     }
-    //     user.deletedAt = new Date();
-    // }
+
+    async delete(id: UserId): Promise<void> {
+        const user = _users.find(user => user.id.value === id.value);
+        if (!user) {
+            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+        }
+        user.deletedAt = new Date();
+    }
 }

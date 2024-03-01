@@ -15,9 +15,10 @@ export class UserRoute {
         router.get("/users/:userId", await userController.getById());
         router.get("/users/email/:userMail", await userController.getByEmail());
         router.post("/users", await userController.create());
+        router.delete("/users/:userId", await userController.delete());
+
         // router.post("/users/subscribeSession/:userId", );
         // router.post("/users/unsubscribeSession/:userId", );
-        // router.delete("/users/:userId",);
 
         return router;
     }

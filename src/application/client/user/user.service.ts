@@ -41,7 +41,10 @@ export class UserService {
     }
 
 
-// delete(userId)
+    async delete(userId: UserId) {
+        return this.userRepository.delete(userId);
+    }
+
 // updateInfo(userId, firstName, lastName, address, phone)
 // updateFavoriteActivities(userId, activities)
 // updatePassword(userId, password)

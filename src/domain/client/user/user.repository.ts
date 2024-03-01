@@ -6,5 +6,5 @@ export interface UserRepository {
     getById(id: UserId): Promise<User>;
     getByEmail(email: Email): Promise<User | undefined>;
     create(user: User): Promise<User>;
-    // delete(id: UserId): Promise<void>;
+    delete(id: UserId): Promise<void>;
 }
