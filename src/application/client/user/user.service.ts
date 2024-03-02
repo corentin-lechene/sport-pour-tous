@@ -7,12 +7,14 @@ import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-u
 import {IInvoiceService} from "../invoice/invoice.service.interface";
 import {SessionId} from "../../../domain/session/session.model";
 import {ISessionService} from "../../session/session.service.interface";
-import {SessionException, SessionMessageException} from "../../session/session.exception";
 import {IGuaranteeService} from "../guarantee/guarantee.service.interface";
 import {FormulaData} from "../../../infrastruture/express/formula/formula-data";
 import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
 import {FieldPlusMaterialFormula} from "../../../domain/formula/extends/field-plus-material.formula";
 import {IFormulaService} from "../../formula/formula.service.interface";
+import {SessionException} from "../../session/session.exception";
+import {GuaranteeException} from "../guarantee/guarantee.exception";
+import {FormulaException} from "../../formula/formula.exception";
 
 export class UserService {
 
@@ -108,29 +110,39 @@ export class UserService {
             throw new UserException(UserMessageException.USER_NOT_FOUND)
         }
 
-        const session = await this.ISessionService.getById(sessionId);
-        if(!session) {
-            throw new SessionException(SessionMessageException.SESSION_NOT_FOUND);
+        try {
+            const session = await this.ISessionService.getById(sessionId);
+            const formula = await this.IFormulaService.create(formulaData);
+
+            const guarantees: Guarantee[] = [];
+            if(user.isFirstTime) {
+                const guarantee = await this.IGuaranteeService.createBankGuarantee();
+                guarantees.push(guarantee);
+            }
+            if(formula instanceof FieldPlusMaterialFormula) {
+                const guarantee = await this.IGuaranteeService.createMaterialGuarantee(formula);
+                guarantees.push(guarantee);
+            }
+
+            const guaranteeTotal = guarantees.reduce((total, g) => total + (g.amount || 0), 0);
+            const totalPrice = session.price + guaranteeTotal + formula.price;
+            await this.IInvoiceService.create(user.id, session.id, session.price, totalPrice, guarantees);
+            await this.userRepository.addSession(user.id, session);
+            await this.ISessionService.addUser(session.id, user);
+
+        } catch (e) {
+            if(e instanceof SessionException) {
+                throw new UserException(UserMessageException.SESSION_ERROR);
+            }
+
+            if(e instanceof GuaranteeException) {
+                throw new UserException(UserMessageException.GUARANTEE_ERROR);
+            }
+
+            if(e instanceof FormulaException) {
+                throw new UserException(UserMessageException.FORMULA_ERROR)
+            }
         }
-
-        const formula = await this.IFormulaService.create(formulaData);
-
-        const guarantees: Guarantee[] = [];
-        if(user.isFirstTime) {
-            const guarantee = await this.IGuaranteeService.createBankGuarantee();
-            guarantees.push(guarantee);
-        }
-        if(formula instanceof FieldPlusMaterialFormula) {
-            const guarantee = await this.IGuaranteeService.createMaterialGuarantee(formula);
-            guarantees.push(guarantee);
-        }
-
-        const guaranteeTotal = guarantees.reduce((total, g) => total + (g.amount || 0), 0);
-        const totalPrice = session.price + guaranteeTotal + formula.price;
-        await this.IInvoiceService.create(user.id, session.id, session.price, totalPrice, guarantees);
-
-        await this.userRepository.addSession(user.id, session);
-        await this.ISessionService.addUser(session.id, user);
 
         // todo: via mail or sms send a confirmation
     }
@@ -142,9 +154,9 @@ export class UserService {
         }
 
         const session = await this.ISessionService.getById(sessionId);
-        if(!session) {
-            throw new SessionException(SessionMessageException.SESSION_NOT_FOUND);
-        }
+        // if(!session) {
+        //     throw new UserException();
+        // }
 
         // todo : vérifier la relation entre les deux existent bien
 

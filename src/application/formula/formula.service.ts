@@ -10,7 +10,7 @@ import {Equipment, EquipmentId} from "../../domain/equipment/equipment.model";
 import {IFormulaService} from "./formula.service.interface";
 import {EquipmentException} from "../equipment/exception/equipment.exception";
 
-// pattern stratégie + factory
+// https://refactoring.guru/fr/design-patterns/strategy
 interface FormulaCreationStrategy {
     createFormula(field: string, equipments: string[], extras: string[]): Formula;
 }
@@ -78,7 +78,7 @@ export class FormulaService implements IFormulaService {
                 throw new Error(e.message);
             }
 
-            throw new FormulaException(FormulaMessageException.BAD_FORMULA);
+            throw new FormulaException(FormulaMessageException.CANNOT_LOAD_EQUIPMENT);
         }
     }
 

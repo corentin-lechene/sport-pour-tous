@@ -3,6 +3,10 @@ export enum UserMessageException {
     THE_MAIL_ALREADY_EXIST = 'Mail already exists',
     USER_NOT_FOUND = 'User not found',
     PASSWORD_IS_MISSING = 'Password is missing',
+
+    SESSION_ERROR = "Problem with session",
+    GUARANTEE_ERROR = "Problem with guarantee",
+    FORMULA_ERROR = "Problem with guarantee",
 }
 
 export class UserException extends Error {
