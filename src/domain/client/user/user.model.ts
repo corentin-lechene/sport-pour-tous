@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from "uuid";
 import {Email} from "../../../common/vo/email/email";
 import {PhoneNumber} from "../../../common/vo/phoneNumber/phoneNumber";
+import {Session} from "../../session/session.model";
 export class UserId {
     value: string;
 
@@ -17,11 +18,15 @@ export class User {
     password: string;
     address: string;
     phoneNumber: string;
+
+    sessions: Session[]
+    isFirstTime: boolean;
+
     deletedAt?: Date;
     createdAt?: Date;
 
 
-    constructor(firstname: string, lastname: string, email: Email, password: string, address: string, phoneNumber: PhoneNumber) {
+    constructor(firstname: string, lastname: string, email: Email, password: string, address: string, phoneNumber: PhoneNumber, isFirstTime: boolean) {
         this.id = new UserId();
         this.firstname = firstname;
         this.lastname = lastname;
@@ -29,5 +34,6 @@ export class User {
         this.password = password;
         this.address = address; // todo : VO ??
         this.phoneNumber = phoneNumber.getPhoneNumber;
+        this.isFirstTime = isFirstTime;
     }
 }

@@ -4,8 +4,9 @@ import {EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-ty
 import {EquipmentException} from "./exception/equipment.exception";
 import {EquipmentTypeRepository} from "../../domain/equipment/equipmentType/equipment-type.repository";
 import {EquipmentMessageError} from "./exception/equipment.message-error";
+import {IEquipmentService} from "./equipment.service.interface";
 
-export class EquipmentService {
+export class EquipmentService implements IEquipmentService {
     constructor(
         private readonly equipmentRepository: EquipmentRepository,
         private readonly equipmentTypeRepository: EquipmentTypeRepository

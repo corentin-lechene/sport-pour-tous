@@ -1,7 +1,7 @@
 import {EmailException, EmailMessageException} from "./email.exception";
 
 export class Email {
-    private constructor(private readonly _value: string) {
+    private constructor(protected readonly _value: string) {
         this._value = _value;
     }
 

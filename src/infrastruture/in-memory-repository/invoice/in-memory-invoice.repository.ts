@@ -2,6 +2,7 @@ import {InvoiceRepository} from "../../../domain/client/invoice/invoice.reposito
 import {Invoice, InvoiceId, Status} from "../../../domain/client/invoice/invoice.model";
 import {UserId} from "../../../domain/client/user/user.model";
 import {InvoiceExceptionRepository, InvoiceMessageExceptionRepository} from "./invoice.exception.repository";
+import {SessionId} from "../../../domain/session/session.model";
 
 const _invoices: Invoice[] = []
 
@@ -26,8 +27,8 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
         return invoice;
     }
 
-    async getByUserAndBySession(userId: UserId /*sessionId: SessionId*/): Promise<Invoice | undefined> {
-        return  _invoices.find(invoice => invoice.userId.value === userId.value /*&& invoice.sessionId.value === sessionId.value*/);
+    async getByUserAndBySession(userId: UserId,sessionId: SessionId): Promise<Invoice | undefined> {
+        return  _invoices.find(invoice => invoice.userId.value === userId.value && invoice.sessionId.value === sessionId.value);
     }
 
     async delete(invoiceId: InvoiceId): Promise<void> {
@@ -44,6 +45,8 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
             throw new InvoiceExceptionRepository(InvoiceMessageExceptionRepository.INVOICE_NOT_FOUND);
         }
         invoice.status = status;
+        if(status === Status.PAYED) invoice.paidAt = new Date();
+
         return invoice;
     }
 

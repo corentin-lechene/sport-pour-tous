@@ -5,15 +5,29 @@ import {UserException, UserMessageException} from "./user.exception";
 import {CreateUserDto} from "../../../infrastruture/express/client/user/create-user.dto";
 import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-user.dto";
 import {IInvoiceService} from "../invoice/invoice.service.interface";
+import {SessionId} from "../../../domain/session/session.model";
+import {ISessionService} from "../../session/session.service.interface";
+import {SessionException, SessionMessageException} from "../../session/session.exception";
+import {IGuaranteeService} from "../guarantee/guarantee.service.interface";
+import {FormulaData} from "../../../infrastruture/express/formula/formula-data";
+import {IFormulaService} from "../../formula/formula.service.interface";
+import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
+import {FieldPlusMaterialFormula} from "../../../domain/formula/extends/field-plus-material.formula";
 
 export class UserService {
 
-    constructor(
+    constructor (
         private readonly userRepository: UserRepository,
         private readonly IInvoiceService: IInvoiceService,
+        private readonly ISessionService: ISessionService,
+        private readonly IGuaranteeService: IGuaranteeService,
+        private readonly IFormulaService: IFormulaService,
     ) {
         this.userRepository = userRepository;
         this.IInvoiceService = IInvoiceService;
+        this.ISessionService = ISessionService;
+        this.IGuaranteeService = IGuaranteeService;
+        this.IFormulaService = IFormulaService;
     }
     async getAll(): Promise<User[]> {
         return this.userRepository.getAll();
@@ -40,7 +54,7 @@ export class UserService {
         }
 
         const user = new User(createUserDto.firstname, createUserDto.lastname, createUserDto.email,
-            createUserDto.password, createUserDto.address, createUserDto.phoneNumber);
+            createUserDto.password, createUserDto.address, createUserDto.phoneNumber, true);
         return this.userRepository.create(user)
     }
 
@@ -88,12 +102,63 @@ export class UserService {
         return this.IInvoiceService.getByUser(userId);
     }
 
+    async subscribeToSession(userId: UserId, sessionId: SessionId, formulaData: FormulaData) {
+        const user = await this.userRepository.getById(userId);
+        if(!user) {
+            throw new UserException(UserMessageException.USER_NOT_FOUND)
+        }
+
+        const session = await this.ISessionService.getById(sessionId);
+        if(!session) {
+            throw new SessionException(SessionMessageException.SESSION_NOT_FOUND);
+        }
+
+        const formula = await this.IFormulaService.create(formulaData);
+
+        const guarantees: Guarantee[] = [];
+        if(user.isFirstTime) {
+            const guarantee = await this.IGuaranteeService.createBankGuarantee();
+            guarantees.push(guarantee);
+        }
+        if(formula instanceof FieldPlusMaterialFormula) {
+            const guarantee = await this.IGuaranteeService.createMaterialGuarantee(formula);
+            guarantees.push(guarantee);
+        }
+
+        const guaranteeTotal = guarantees.reduce((total, g) => total + (g.amount || 0), 0);
+        const totalPrice = session.price + guaranteeTotal + formula.price;
+        await this.IInvoiceService.create(user.id, session.id, session.price, totalPrice, guarantees);
+
+        await this.userRepository.addSession(user.id, session);
+        await this.ISessionService.addUser(session.id, user);
+
+        // todo: via mail or sms send a confirmation
+    }
+
+    async unsubscribeToSession(userId: UserId, sessionId: SessionId) {
+        const user = await this.userRepository.getById(userId);
+        if(!user) {
+            throw new UserException(UserMessageException.USER_NOT_FOUND)
+        }
+
+        const session = await this.ISessionService.getById(sessionId);
+        if(!session) {
+            throw new SessionException(SessionMessageException.SESSION_NOT_FOUND);
+        }
+
+        // todo : vérifier la relation entre les deux existent bien
+
+        // todo: caution + invoice valider si moins de 2h avant
+
+        // todo: remove relation between session and user
+
+        // todo: subscribe successfully
+
+        // todo: send confirmation mail
+
+    }
+
     // getAllGuarantees(userId)
-
-    // subscribeToSession(userId, sessionId)
-    // unsubscribeToSession(userId, sessionId)
-
-
     // updateFavoriteActivities(userId, activities)
     // getAllSessions(userId)
     // getAllTrackingFolders(userId)

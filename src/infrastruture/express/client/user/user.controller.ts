@@ -8,6 +8,9 @@ import {PhoneNumber} from "../../../../common/vo/phoneNumber/phoneNumber";
 import {UserException} from "../../../../application/client/user/user.exception";
 import {PhoneNumberException} from "../../../../common/vo/phoneNumber/phoneNumber.exception";
 import {UpdateUserDto} from "./update-user.dto";
+import {SessionId} from "../../../../domain/session/session.model";
+import {FormulaData} from "../../formula/formula-data";
+import {FormulaException} from "../../../../application/formula/formula.exception";
 
 export class UserController {
     constructor(private readonly userService: UserService) {
@@ -77,7 +80,6 @@ export class UserController {
                 if(e instanceof UserException || e instanceof EmailException || e instanceof PhoneNumberException) {
                     res.statusMessage = e.message;
                 }
-                console.log(e)
 
                 res.status(400).send(e);
             }
@@ -163,5 +165,31 @@ export class UserController {
         }
     }
 
+    async subscribeSession(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+            const sessionId = req.params.sessionId as string;
+            if (!userId?.trim() || !sessionId?.trim()) return res.status(400).end();
 
+            // formula
+            const field = req.body.formulaType.field as string;
+            const equipmentIds = req.body.formulaType.equipmentsIds as string[];
+            const extrasIds = req.body.formulaType.extrasIds as string[];
+
+            if(!field.trim() || !equipmentIds || !extrasIds) return res.status(400).end();
+            const formulaData = new FormulaData(field, equipmentIds, extrasIds);
+
+            try {
+                await this.userService.subscribeToSession(new UserId(userId.trim()), new SessionId(sessionId.trim()), formulaData);
+                // todo: faire payer le invoice
+
+                res.status(200).send();
+            } catch (e) {
+                if(e instanceof UserException || e instanceof FormulaException) {
+                    res.statusMessage = e.message;
+                }
+                res.status(404).send();
+            }
+        }
+    }
 }
