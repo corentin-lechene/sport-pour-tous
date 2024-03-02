@@ -11,7 +11,8 @@ import {
     EquipmentTypeMessageError
 } from "../../../../application/equipment/equipmentType/exception/equipment-type.message-error";
 
-const _equipmentTypes: EquipmentType[] = []
+export const _equipmentTypes: EquipmentType[] = [];
+
 export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository {
 
     async getAll(): Promise<EquipmentType[]> {

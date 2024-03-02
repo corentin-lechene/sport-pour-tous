@@ -2,7 +2,7 @@ import {EquipmentRepositoryException, EquipmentRepositoryExceptionMessage} from 
 import {Equipment, EquipmentId} from "../../../domain/equipment/equipment.model";
 import {EquipmentRepository} from "../../../domain/equipment/equipment.repository";
 
-const _equipments: Equipment[] = []
+export const _equipments: Equipment[] = []
 
 export class InMemoryEquipmentRepository implements EquipmentRepository {
     async getAll(): Promise<Equipment[]> {

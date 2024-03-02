@@ -11,7 +11,6 @@ export class EquipmentRoute {
         const router = express.Router();
         const equipmentController = new EquipmentController(new EquipmentService(
             new InMemoryEquipmentRepository(),
-            new InMemoryEquipmentTypeRepository()
         ));
 
         router.get("/equipments", await equipmentController.getAll());
