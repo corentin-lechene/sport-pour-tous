@@ -5,9 +5,6 @@ import {CreateEquipmentTypeDto} from "./create-equipment-type.dto";
 import {
     EquipmentTypeException
 } from "../../../../application/equipment/equipmentType/exception/equipment-type.exception";
-import {
-    EquipmentTypeMessageError
-} from "../../../../application/equipment/equipmentType/exception/equipment-type.message-error";
 
 export class EquipmentTypeController {
     constructor(private readonly equipmentTypeService: EquipmentTypeService) {
@@ -30,15 +27,16 @@ export class EquipmentTypeController {
                 const equipmentType = await this.equipmentTypeService.getById(new EquipmentTypeId(equipmentTypeId));
                 res.send(equipmentType);
             } catch(e) {
-                // console.error(e);
-                res.status(404).send();
+                if(e instanceof EquipmentTypeException) {
+                    res.statusMessage = e.message;
+                }
+                res.status(404).send(e);
             }
         }
     }
 
     async create(): Promise<RequestHandler> {
         return async (req, res) => {
-            console.log(req.body);
             const name = req.body.name as string;
             if(!name?.trim()) return res.status(400).end();
 
@@ -48,8 +46,10 @@ export class EquipmentTypeController {
                 const equipmentType = await this.equipmentTypeService.create(createEquipmentTypeDto.name);
                 res.status(201).send(equipmentType);
             } catch(e) {
-                console.log("e: ", e);
-                res.status(400).send(e);
+                if(e instanceof EquipmentTypeException) {
+                    res.statusMessage = e.message;
+                }
+                res.status(404).send(e);
             }
         }
     }
@@ -70,8 +70,10 @@ export class EquipmentTypeController {
                 await this.equipmentTypeService.delete(new EquipmentTypeId(equipmentTypeId));
                 res.status(204).end();
             } catch(e) {
-                console.error(e);
-                res.status(404).end();
+                if(e instanceof EquipmentTypeException) {
+                    res.statusMessage = e.message;
+                }
+                res.status(404).send(e);
             }
         }
     }

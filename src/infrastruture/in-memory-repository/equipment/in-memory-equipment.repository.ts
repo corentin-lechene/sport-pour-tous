@@ -1,7 +1,6 @@
-import {EquipmentRepository} from "../../domain/equipment/equipment.repository";
-import {Equipment, EquipmentId} from "../../domain/equipment/equipment.model";
-import {EquipmentException} from "../../application/equipment/exception/equipment.exception";
-import {EquipmentMessageError} from "../../application/equipment/exception/equipment.message-error";
+import {EquipmentRepositoryException, EquipmentRepositoryExceptionMessage} from "./equipment.repository-exception";
+import {Equipment, EquipmentId} from "../../../domain/equipment/equipment.model";
+import {EquipmentRepository} from "../../../domain/equipment/equipment.repository";
 
 const _equipments: Equipment[] = []
 
@@ -13,7 +12,7 @@ export class InMemoryEquipmentRepository implements EquipmentRepository {
     async getById(id: EquipmentId): Promise<Equipment> {
         const equipment = _equipments.find(equipment => equipment.id.value === id.value);
         if (!equipment) {
-            throw new EquipmentException(EquipmentMessageError.EQUIPMENT_NOT_FOUND);
+            throw new EquipmentRepositoryException(EquipmentRepositoryExceptionMessage.EQUIPMENT_NOT_FOUND);
         }
         return equipment;
     }
@@ -26,7 +25,7 @@ export class InMemoryEquipmentRepository implements EquipmentRepository {
     async delete(id: EquipmentId): Promise<void> {
         const equipment = _equipments.find(equipment => equipment.id.value === id.value);
         if (!equipment) {
-            throw new EquipmentException(EquipmentMessageError.EQUIPMENT_NOT_FOUND);
+            throw new EquipmentRepositoryException(EquipmentRepositoryExceptionMessage.EQUIPMENT_NOT_FOUND);
         }
         equipment.deletedAt = new Date();
     }
