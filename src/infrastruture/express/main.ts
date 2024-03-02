@@ -5,6 +5,9 @@ import {ConsoleLogger, LoggerService} from "../../common";
 import {EquipmentTypeRoute} from "./equipments/equipmentType/equipment-type.route";
 import {EquipmentRoute} from "./equipments/equipment.route";
 import {ActivityRoute} from "./activity/activity.route";
+import {FieldRoute} from "./field/field.route";
+import {PlaceRoute} from "./place/place.route";
+import {SessionRoute} from "./session/session.route";
 
 dotenv.config();
 
@@ -24,6 +27,9 @@ export async function start_express() {
     // all routes
     app.use(await EquipmentTypeRoute.getRoutes());
     app.use(await EquipmentRoute.getRoutes());
+    app.use(await FieldRoute.getRoutes());
+    app.use(await PlaceRoute.getRoutes());
+    app.use(await SessionRoute.getRoutes());
     app.use(await ActivityRoute.getRoutes());
 
     // populate for dev
