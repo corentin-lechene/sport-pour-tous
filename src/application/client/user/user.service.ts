@@ -15,6 +15,8 @@ import {IFormulaService} from "../../formula/formula.service.interface";
 import {SessionException} from "../../session/session.exception";
 import {GuaranteeException} from "../guarantee/guarantee.exception";
 import {FormulaException} from "../../formula/formula.exception";
+import * as dayjs from "dayjs";
+import {InvoiceException} from "../invoice/invoice.exception";
 
 export class UserService {
 
@@ -153,21 +155,37 @@ export class UserService {
             throw new UserException(UserMessageException.USER_NOT_FOUND)
         }
 
-        const session = await this.ISessionService.getById(sessionId);
-        // if(!session) {
-        //     throw new UserException();
-        // }
+        try {
+            const session = await this.ISessionService.getById(sessionId);
 
-        // todo : vérifier la relation entre les deux existent bien
+            const now = dayjs(new Date());
+            const sessionStart = dayjs(session.startAt);
 
-        // todo: caution + invoice valider si moins de 2h avant
+            if(sessionStart.diff(now, 'hours') > 2) {
+                const invoice = await this.IInvoiceService.getBySessionAndUser(session.id, user.id);
+                if(invoice) {
+                    const guarantees = invoice.guarantees;
+                    guarantees.map(async guarantee => await this.IGuaranteeService.delete(guarantee.id));
+                    await this.IInvoiceService.delete(invoice.id);
+                }
+            }
 
-        // todo: remove relation between session and user
+            await this.userRepository.deleteSession(user.id, session.id);
+            await this.ISessionService.deleteUser(session.id, user.id);
 
-        // todo: subscribe successfully
+        } catch (e) {
+            if(e instanceof SessionException) {
+                throw new UserException(UserMessageException.SESSION_ERROR);
+            }
 
-        // todo: send confirmation mail
+            if(e instanceof InvoiceException) {
+                throw new UserException(UserMessageException.INVOICE_ERROR);
+            }
 
+            if(e instanceof GuaranteeException) {
+                throw new UserException(UserMessageException.GUARANTEE_ERROR);
+            }
+        }
     }
 
     // getAllGuarantees(userId)

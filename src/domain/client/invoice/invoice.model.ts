@@ -23,19 +23,19 @@ export class Invoice {
     amount: number;
     total: number;
     status: Status;
-    guarantee: Guarantee[];
+    guarantees: Guarantee[];
 
     paidAt?: Date
     deletedAt?: Date
     createdAt?: Date
 
 
-    constructor(userId: UserId, amount: number, total: number, status: Status, guarantee: Guarantee[]) {
+    constructor(userId: UserId, amount: number, total: number, status: Status, guarantees: Guarantee[]) {
         this.id = new InvoiceId();
         this.userId = userId;
         this.amount = amount;
         this.total = total;
         this.status = status;
-        this.guarantee = guarantee;
+        this.guarantees = guarantees;
     }
 }

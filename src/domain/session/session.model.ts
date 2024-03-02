@@ -14,8 +14,10 @@ export class Session {
     max_participant: number; // todo: activity or session
     name: string;
     price: number;
+    startAt: Date;
 
     users: User[]
 
     deletedAt?: Date;
+    createdAt?: Date;
 }

@@ -3,7 +3,7 @@ import {UserRepository} from "../../../../domain/client/user/user.repository";
 import {Email} from "../../../../common/vo/email/email";
 import {PhoneNumber} from "../../../../common/vo/phoneNumber/phoneNumber";
 import {UserExceptionRepository, UserMessageExceptionRepository} from "./user.exception.repository";
-import {Session} from "../../../../domain/session/session.model";
+import {Session, SessionId} from "../../../../domain/session/session.model";
 
 const _users: User[] = []
 
@@ -77,5 +77,19 @@ export class InMemoryUserRepository implements UserRepository {
         }
         user.isFirstTime = false;
         user.sessions.push(session);
+    }
+
+    async deleteSession(id: UserId, sessionId: SessionId): Promise<void> {
+        const user = _users.find(user => user.id.value === id.value);
+        if (!user) {
+            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+        }
+
+        const session = user.sessions.find(session => session.id.value === sessionId.value);
+        if (!session) {
+            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+        }
+
+        session.deletedAt = new Date();
     }
 }

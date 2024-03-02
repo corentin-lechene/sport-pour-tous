@@ -23,4 +23,13 @@ export class InMemoryGuaranteeRepository implements GuaranteeRepository {
         _guarantees.push(guarantee);
         return guarantee;
     }
+
+    async delete(guaranteeId: GuaranteeId): Promise<void> {
+        const guarantee = _guarantees.find(guarantee => guarantee.id.value === guaranteeId.value);
+        if (!guarantee) {
+            throw new GuaranteeExceptionRepository(GuaranteeMessageExceptionRepository.GUARANTEE_NOT_FOUND);
+        }
+
+        guarantee.deletedAt = new Date();
+    }
 }

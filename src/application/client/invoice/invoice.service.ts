@@ -24,7 +24,7 @@ export class InvoiceService implements IInvoiceService {
              throw new InvoiceException(InvoiceMessageException.AMOUNT_ZERO_OR_LOWER);
          }
 
-        const invoiceExisted = await this.invoiceRepository.getByUserAndBySession(userId ,sessionId)
+        const invoiceExisted = await this.invoiceRepository.getByUserAndSession(userId ,sessionId)
         if(invoiceExisted) {
             throw new InvoiceException(InvoiceMessageException.INVOICE_ALREADY_EXIST_FOR_THE_USER_AND_SESSION);
         }
@@ -52,5 +52,9 @@ export class InvoiceService implements IInvoiceService {
      * */
     async getByUser(userId: UserId) {
         return this.invoiceRepository.getAllByUser(userId);
+    }
+
+    async getBySessionAndUser(sessionId: SessionId, userId: UserId): Promise<Invoice | undefined> {
+        return this.invoiceRepository.getByUserAndSession(sessionId, userId);
     }
 }

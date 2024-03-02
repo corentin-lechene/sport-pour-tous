@@ -7,6 +7,7 @@ export enum UserMessageException {
     SESSION_ERROR = "Problem with session",
     GUARANTEE_ERROR = "Problem with guarantee",
     FORMULA_ERROR = "Problem with guarantee",
+    INVOICE_ERROR = "Problem with invoice",
 }
 
 export class UserException extends Error {

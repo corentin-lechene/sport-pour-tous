@@ -28,4 +28,8 @@ export class GuaranteeService implements IGuaranteeService {
         const guarantee = new Guarantee(GUARANTEE_MATERIAL, "materials", formula);
         return this.guaranteeRepository.create(guarantee);
     }
+
+    delete(guaranteeId: GuaranteeId): Promise<void> {
+        return this.guaranteeRepository.delete(guaranteeId);
+    }
 }

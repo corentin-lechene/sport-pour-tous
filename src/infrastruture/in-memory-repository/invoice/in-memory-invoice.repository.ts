@@ -27,7 +27,7 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
         return invoice;
     }
 
-    async getByUserAndBySession(userId: UserId,sessionId: SessionId): Promise<Invoice | undefined> {
+    async getByUserAndSession(userId: UserId, sessionId: SessionId): Promise<Invoice | undefined> {
         return  _invoices.find(invoice => invoice.userId.value === userId.value && invoice.sessionId.value === sessionId.value);
     }
 
@@ -49,5 +49,4 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
 
         return invoice;
     }
-
 }

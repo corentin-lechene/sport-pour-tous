@@ -192,4 +192,23 @@ export class UserController {
             }
         }
     }
+
+    async unsubscribeSession(): Promise<RequestHandler> {
+        return async (req, res) => {
+            const userId = req.params.userId as string;
+            const sessionId = req.params.sessionId as string;
+            if (!userId?.trim() || !sessionId?.trim()) return res.status(400).end();
+
+            try {
+                await this.userService.unsubscribeToSession(new UserId(userId.trim()), new SessionId(sessionId.trim()));
+                res.status(204).send();
+
+            } catch (e) {
+                if(e instanceof UserException) {
+                    res.statusMessage = e.message;
+                }
+                res.status(404).send();
+            }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 import {ISessionService} from "./session.service.interface";
 import {SessionId, Session} from "../../domain/session/session.model";
-import {User} from "../../domain/client/user/user.model";
+import {User, UserId} from "../../domain/client/user/user.model";
 
 export class SessionService implements ISessionService{
     getById(sessionId: SessionId): Promise<Session> {
@@ -9,6 +9,11 @@ export class SessionService implements ISessionService{
 
     addUser(sessionId: SessionId, user: User): Promise<void> {
         throw new Error("not implemented");
+    }
+
+    deleteUser(sessionId: SessionId, userId: UserId): Promise<void> {
+        throw new Error("not implemented");
+
     }
     // getAll(): void
     // getById(sessionId)

@@ -40,8 +40,8 @@ export class UserRoute {
         router.get("/users/invoices/:userId", await userController.getInvoices());
 
 
-        router.post("/users/subscribeSession/:userId/:sessionId", await userController.subscribeSession());
-        // router.post("/users/unsubscribeSession/:userId", );
+        router.post("/users/:userId/subscribe-session/:sessionId", await userController.subscribeSession());
+        router.post("/users/:userId/unsubscribeSession/:sessionId", await userController.unsubscribeSession());
 
         return router;
     }
