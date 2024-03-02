@@ -36,4 +36,8 @@ export class EquipmentService implements IEquipmentService {
     async delete(equipmentId: EquipmentId) {
         return this.equipmentRepository.delete(equipmentId);
     }
+
+    async getByIds(equipmentIds: EquipmentId[]): Promise<Equipment[]> {
+        throw new Error("Not implemented");
+    }
 }
