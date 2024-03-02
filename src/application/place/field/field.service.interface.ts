@@ -7,4 +7,5 @@ export interface IFieldService {
     create(name: string, type: FieldType): Promise<Field>
     validateFieldExists(fieldId: FieldId): Promise<void>
     deleteById(fieldId: FieldId): Promise<void>
+    fetchById(fieldId: FieldId): Promise<Field>
 }

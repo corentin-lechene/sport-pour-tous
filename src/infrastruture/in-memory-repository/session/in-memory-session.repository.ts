@@ -2,13 +2,27 @@ import {Session} from "../../../domain/session/session.model";
 import {SessionRepository} from "../../../domain/session/session.repository";
 import {SessionId} from "../../../domain/session/session-id";
 import {Place} from "../../../domain/place/place.model";
-import {ActivityId} from "../../../domain/activity/activity.model";
+import {Activity, ActivityId} from "../../../domain/activity/activity.model";
 import {SessionExceptionRepository, SessionMessageExceptionRepository} from "./session.exception.repository";
-
+import {EquipmentType} from "../../../domain/equipment/equipmentType/equipment-type.model";
+import {Field} from "../../../domain/place/field/field.model";
+import {FieldType} from "../../../domain/place/field/field-type.enum";
+import {Address} from "../../../domain/place/address";
+import {User, UserId} from "../../../domain/client/user/user.model";
 
 const _sessions: Session[] = [];
 
 export class InMemorySessionRepository implements SessionRepository {
+    constructor() {
+        const equipmentType = new EquipmentType("toto");
+        const activity = new Activity("tennis", "description", [equipmentType])
+        const field = new Field("terrain 1", FieldType.BASKETBALL_INDOOR);
+        const address = new Address("toto", "toto", "toto", "toto");
+        const place = new Place([field], address)
+        const session = new Session("séance 1", 10, place, 10, new Date(), new Date(), activity, []);
+
+        _sessions.push(session);
+    }
     async fetchAll(): Promise<Session[]> {
         return _sessions.filter(session => !session.deletedAt);
     }
@@ -66,6 +80,31 @@ export class InMemorySessionRepository implements SessionRepository {
             throw new SessionExceptionRepository(SessionMessageExceptionRepository.SESSION_NOT_FOUND);
         }
         return session;
+    }
+
+    async addUser(sessionId: SessionId, user: User) {
+        const session = _sessions.find(session => session.id.value === sessionId.value);
+        if (!session) {
+            throw new SessionExceptionRepository(SessionMessageExceptionRepository.SESSION_NOT_FOUND);
+        }
+
+         session.users.push(user);
+    }
+
+    async deleteUser(sessionId: SessionId, userId: UserId) {
+        const session = _sessions.find(session => session.id.value === sessionId.value);
+        if (!session) {
+            throw new SessionExceptionRepository(SessionMessageExceptionRepository.SESSION_NOT_FOUND);
+        }
+
+        const user = session.users.find(user => user.id.value === userId.value);
+        if(!user) {
+            throw new SessionExceptionRepository(SessionMessageExceptionRepository.USER_NOT_FOUND);
+        }
+
+        session.users = session.users.filter(user => user.id.value !== userId.value);
+
+
     }
 
 }

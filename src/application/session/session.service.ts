@@ -44,7 +44,7 @@ export class SessionService implements ISessionService{
         }
 
         try {
-            const newSession = new Session(name, price, place, maxParticipant, startAt, endAt, activity)
+            const newSession = new Session(name, price, place, maxParticipant, startAt, endAt, activity, [])
             return await this.sessionRepository.create(newSession);
         } catch (error) {
             throw new SessionException(SessionMessage.SESSION_ALREADY_EXISTS);
@@ -113,11 +113,11 @@ export class SessionService implements ISessionService{
     }
 
     async addUser(sessionId: SessionId, user: User): Promise<void> {
-        throw new Error("not implemented");
+        return this.sessionRepository.addUser(sessionId, user);
     }
 
     deleteUser(sessionId: SessionId, userId: UserId): Promise<void> {
-        throw new Error("not implemented");
+        return this.sessionRepository.deleteUser(sessionId, userId);
     }
 
 

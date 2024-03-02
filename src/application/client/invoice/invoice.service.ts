@@ -8,9 +8,7 @@ import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
 import {SessionId} from "../../../domain/session/session-id";
 
 export class InvoiceService implements IInvoiceService {
-    constructor(private readonly invoiceRepository: InvoiceRepository) {
-        this.invoiceRepository = invoiceRepository;
-    }
+    constructor(private readonly invoiceRepository: InvoiceRepository) {}
 
     async getAll() {
         return this.invoiceRepository.getAll();

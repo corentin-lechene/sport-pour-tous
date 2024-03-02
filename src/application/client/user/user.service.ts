@@ -111,14 +111,13 @@ export class UserService {
         const guarantees: Guarantee[] = await this.IGuaranteeService.getAboutSubscription(formula, user);
         const guaranteeTotal = guarantees.reduce((acc, guarantee) => acc + guarantee.amount, 0)
 
-        // create invoice
+        // // create invoice
         const totalPrice = session.price + guaranteeTotal + formula.price;
         await this.IInvoiceService.create(user, session, session.price, totalPrice, guarantees);
 
         // subscribe
         await this.userRepository.addSession(user.id, session);
         await this.ISessionService.addUser(session.id, user);
-
 
         // todo: via mail or sms send a confirmation
     }
@@ -128,18 +127,21 @@ export class UserService {
 
         const session = await this.ISessionService.fetchById(sessionId);
 
+        console.log(user);
+        console.log(session);
+
         // si c'est avant
         const now = dayjs();
         const sessionStart = dayjs(session.startAt);
 
-        if(sessionStart.diff(now, 'hours') > 2) {
-            const invoice = await this.IInvoiceService.getBySessionAndUser(session.id, user.id);
-            if(invoice) {
-                const guarantees = invoice.guarantees;
-                guarantees.map(async guarantee => await this.IGuaranteeService.delete(guarantee.id));
-                await this.IInvoiceService.delete(invoice.id);
-            }
-        }
+        // if(sessionStart.diff(now, 'hours') > 2) {
+        //     const invoice = await this.IInvoiceService.getBySessionAndUser(session.id, user.id);
+        //     if(invoice) {
+        //         const guarantees = invoice.guarantees;
+        //         guarantees.map(async guarantee => await this.IGuaranteeService.delete(guarantee.id));
+        //         await this.IInvoiceService.delete(invoice.id);
+        //     }
+        // }
 
         await this.userRepository.deleteSession(user.id, session.id);
         await this.ISessionService.deleteUser(session.id, user.id);

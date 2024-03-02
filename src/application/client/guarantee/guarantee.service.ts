@@ -4,6 +4,7 @@ import {GuaranteeRepository} from "../../../domain/client/guarantee/guarantee.re
 import {FieldPlusEquipmentFormula} from "../../../domain/formula/extends/field-plus-equipment.formula";
 import {User} from "../../../domain/client/user/user.model";
 import {Formula} from "../../../domain/formula/formula.model";
+import {ExtraFormula} from "../../../domain/formula/extends/extra.formule";
 
 const GUARANTEE_BANK = 10;
 const GUARANTEE_MATERIAL = 20;
@@ -24,7 +25,7 @@ export class GuaranteeService implements IGuaranteeService {
     async getAboutSubscription(formula: Formula, user: User): Promise<Guarantee[]> {
         const guarantees: Guarantee[] = [];
 
-        if(formula instanceof FieldPlusEquipmentFormula) {
+        if(formula instanceof FieldPlusEquipmentFormula || formula instanceof ExtraFormula) {
             const guarantee = await this.createMaterialGuarantee(formula, user);
             guarantees.push(guarantee);
         }

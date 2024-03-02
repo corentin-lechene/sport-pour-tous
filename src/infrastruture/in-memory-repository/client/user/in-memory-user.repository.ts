@@ -88,9 +88,10 @@ export class InMemoryUserRepository implements UserRepository {
 
         const session = user.sessions.find(session => session.id.value === sessionId.value);
         if (!session) {
-            throw new UserExceptionRepository(UserMessageExceptionRepository.USER_NOT_FOUND);
+            throw new UserExceptionRepository(UserMessageExceptionRepository.SESSION_NOT_FOUND);
         }
 
-        session.deletedAt = new Date();
+        user.sessions = user.sessions.filter(session => session.id.value !== sessionId.value);
+
     }
 }

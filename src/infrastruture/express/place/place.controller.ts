@@ -5,10 +5,8 @@ import {PlaceService} from "../../../application/place/place.service";
 import {PlaceException} from "../../../application/place/exception/place.exception";
 import {Place} from "../../../domain/place/place.model";
 import {FieldId} from "../../../domain/place/field/field-id";
-import {Address} from "../../../domain/place/address";
 import {FieldException} from "../../../application/place/field/exception/field.exception";
 import {FieldMessage} from "../../../application/place/field/exception/field.message";
-import {Field} from "../../../domain/place/field/field.model";
 
 export class PlaceController {
     constructor(private readonly placeService: PlaceService) {}

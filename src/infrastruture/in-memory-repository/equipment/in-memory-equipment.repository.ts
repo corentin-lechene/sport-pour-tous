@@ -1,10 +1,18 @@
 import {EquipmentRepositoryException, EquipmentRepositoryExceptionMessage} from "./equipment.repository-exception";
 import {Equipment, EquipmentId} from "../../../domain/equipment/equipment.model";
 import {EquipmentRepository} from "../../../domain/equipment/equipment.repository";
+import {EquipmentType} from "../../../domain/equipment/equipmentType/equipment-type.model";
 
 export const _equipments: Equipment[] = []
 
 export class InMemoryEquipmentRepository implements EquipmentRepository {
+    constructor() {
+        const equipmentType = new EquipmentType("balle");
+
+        const equipment = new Equipment("nom", 10, equipmentType);
+
+        _equipments.push(equipment);
+    }
     async getAll(): Promise<Equipment[]> {
         return _equipments.filter(equipment => !equipment.deletedAt);
     }

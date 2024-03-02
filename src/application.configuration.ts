@@ -53,6 +53,6 @@ export const sessionService = new SessionService(sessionRepository, activityServ
 export const invoiceService = new InvoiceService(invoiceRepository);
 
 export const guaranteeService = new GuaranteeService(guaranteeRepository);
-export const formulaService = new FormulaService(formulaRepository, equipmentService);
+export const formulaService = new FormulaService(formulaRepository, equipmentService, fieldService);
 
 export const userService = new UserService (userRepository, invoiceService, sessionService, guaranteeService, formulaService)

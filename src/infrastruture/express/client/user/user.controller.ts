@@ -14,13 +14,18 @@ import {SessionException} from "../../../../application/session/session.exceptio
 import {SessionId} from "../../../../domain/session/session-id";
 
 export class UserController {
-    constructor(private readonly userService: UserService) {
-        this.userService = userService;
-    }
+    constructor(private readonly userService: UserService) {}
+
     async getAll(): Promise<RequestHandler> {
         return async (req, res) => {
             const users = await this.userService.getAll();
-            res.send(users);
+            const usersFiltered = users.slice().map(user => ({
+                ...user, sessions: user.sessions.slice().map(session=> {
+                   session.users = []
+                    return session
+                })
+            }))
+            res.send(usersFiltered);
         }
     }
 
@@ -31,7 +36,14 @@ export class UserController {
 
             try {
                 const user = await this.userService.getById(new UserId(userId.trim()));
-                res.send(user);
+
+                const usersFiltered = {...user,
+                    sessions: user.sessions.slice().map(session=> {
+                        session.users = []
+                        return session
+                    })}
+
+                res.send(usersFiltered);
             } catch (e) {
                 res.status(404).send();
             }
@@ -178,11 +190,11 @@ export class UserController {
 
             const field = req.body.formula.field as string;
             const equipmentIds = req.body.formula.equipmentsIds as string[];
-            const extrasIds = req.body.formula.extrasIds as string[];
+            const extras = req.body.formula.extras as string[];
 
-            if(!field?.trim() || !equipmentIds || !extrasIds) return res.status(400).end();
+            if(!field?.trim() || !equipmentIds || !extras) return res.status(400).end();
 
-            const formulaData = new FormulaData(field, equipmentIds, extrasIds);
+            const formulaData = new FormulaData(field, equipmentIds, extras);
 
             try {
                 await this.userService.subscribeToSession(new UserId(userId.trim()), new SessionId(sessionId.trim()), formulaData);

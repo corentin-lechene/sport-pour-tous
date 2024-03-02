@@ -4,7 +4,6 @@ import { SessionId } from "../../../domain/session/session-id";
 import { SessionException } from "../../../application/session/exception/session.exception";
 import { SessionMessage } from "../../../application/session/exception/session-message";
 
-
 export class SessionController {
     constructor(private readonly sessionService: SessionService) {}
 

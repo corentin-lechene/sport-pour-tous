@@ -9,11 +9,10 @@ const _fields: Field[] = [];
 
 export class InMemoryFieldRepository implements FieldRepository {
     //init
-    // constructor() {
-    //     _fields.filter(field => field.id.value === "");
-    //     const newField = new Field("Bernabeu", FieldType.FOOTBALL_OUTDOOR)
-    //     _fields.push(newField);
-    // }
+    constructor() {
+        const newField = new Field("Bernabeu", FieldType.FOOTBALL_OUTDOOR)
+        _fields.push(newField);
+    }
 
     async create(field: Field): Promise<Field> {
         const index = _fields.findIndex(existingField => existingField.id.value === field.id.value);

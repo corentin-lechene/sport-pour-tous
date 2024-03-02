@@ -1,7 +1,7 @@
 export enum FormulaMessageException {
     BAD_FORMULA = "The formula doesn't exist !",
 
-    CANNOT_LOAD_EQUIPMENT = "Une erreur est survenue lors du chargement des équipements"
+    CANNOT_LOAD_EQUIPMENT = "Cannot get equipments !"
 
 }
 
