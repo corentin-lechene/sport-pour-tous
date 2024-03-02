@@ -3,11 +3,15 @@ import {Activity, ActivityId} from "../../domain/activity/activity.model";
 import {EquipmentType, EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-type.model";
 import {ActivityException} from "./exception/activity.exception";
 import {ActivityMessageError} from "./exception/activity.message-error";
-import {IActivityService} from "./activity.service-interface";
+import {IEquipmentService} from "../equipment/equipment.service-repository";
+import {IEquipmentTypeService} from "../equipment/equipmentType/activity.service-interface";
 
 
-export class ActivityService implements IActivityService {
-    constructor(private readonly activityRepository: ActivityRepository) {
+export class ActivityService {
+    constructor(
+        private readonly activityRepository: ActivityRepository,
+        private readonly equipmentTypeService: IEquipmentTypeService,
+    ) {
         this.activityRepository = activityRepository;
     }
 
@@ -24,7 +28,10 @@ export class ActivityService implements IActivityService {
             throw new ActivityException(ActivityMessageError.ACTIVITY_FIELDS_ARE_REQUIRED);
         }
 
-        const equipmentTypes = await this.getEquipmentTypesByIds(equipmentTypeIds);
+        let equipmentTypes: EquipmentType[] = [];
+        if(equipmentTypeIds.length != 0) {
+            equipmentTypes = await this.equipmentTypeService.getEquipmentTypesByIds(equipmentTypeIds);
+        }
 
         const newActivity = new Activity(name, description, equipmentTypes);
         return this.activityRepository.create(newActivity);
@@ -32,9 +39,5 @@ export class ActivityService implements IActivityService {
 
     async delete(activityId: ActivityId) {
         return this.activityRepository.delete(activityId);
-    }
-
-    async getEquipmentTypesByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]> {
-        return this.activityRepository.getEquipmentTypesByIds(equipmentTypeIds);
     }
 }

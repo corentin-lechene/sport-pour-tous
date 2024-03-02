@@ -28,11 +28,15 @@ export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository 
     }
 
     async getByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]> {
-        const equipmentTypes = _equipmentTypes.filter(equipmentType => equipmentTypeIds.includes(equipmentType.id));
-        if (equipmentTypes.length !== equipmentTypeIds.length) {
+        const foundEquipmentTypes = _equipmentTypes.filter(equipmentType =>
+            equipmentTypeIds.some(id => id.value === equipmentType.id.value)
+        );
+
+        if (foundEquipmentTypes.length !== equipmentTypeIds.length) {
             throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
         }
-        return equipmentTypes;
+
+        return foundEquipmentTypes;
     }
 
     async getByName(name: string): Promise<EquipmentType> {

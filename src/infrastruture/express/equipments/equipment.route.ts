@@ -5,12 +5,14 @@ import {InMemoryEquipmentRepository} from "../../in-memory-repository/equipment/
 import {
     InMemoryEquipmentTypeRepository
 } from "../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
+import {EquipmentTypeService} from "../../../application/equipment/equipmentType/equipment-type.service";
 
 export class EquipmentRoute {
     static async getRoutes() {
         const router = express.Router();
         const equipmentController = new EquipmentController(new EquipmentService(
             new InMemoryEquipmentRepository(),
+            new EquipmentTypeService(new InMemoryEquipmentTypeRepository()),
         ));
 
         router.get("/equipments", await equipmentController.getAll());

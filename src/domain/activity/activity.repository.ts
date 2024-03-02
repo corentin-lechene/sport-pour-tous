@@ -6,5 +6,4 @@ export interface ActivityRepository {
     getById(activityId: ActivityId): Promise<Activity>;
     create(activity: Activity): Promise<Activity>;
     delete(activityId: ActivityId): Promise<void>;
-    getEquipmentTypesByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]>;
 }

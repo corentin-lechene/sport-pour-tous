@@ -1,5 +1,5 @@
 import {EquipmentType, EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-type.model";
 
-export interface IActivityService {
+export class IEquipmentService {
     getEquipmentTypesByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]>;
 }

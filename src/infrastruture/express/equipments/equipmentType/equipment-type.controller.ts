@@ -56,7 +56,7 @@ export class EquipmentTypeController {
 
     async update(): Promise<RequestHandler> {
         return async (_, res) => {
-            console.log("not implemented");
+            res.statusMessage = "not implemented";
             res.status(501).end();
         }
     }

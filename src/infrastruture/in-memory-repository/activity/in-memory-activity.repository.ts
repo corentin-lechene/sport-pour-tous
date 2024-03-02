@@ -1,8 +1,6 @@
 import {ActivityRepository} from "../../../domain/activity/activity.repository";
 import {Activity, ActivityId} from "../../../domain/activity/activity.model";
 import {ActivityRepositoryException, ActivityRepositoryExceptionMessage} from "./activity.repository-exception";
-import {EquipmentType, EquipmentTypeId} from "../../../domain/equipment/equipmentType/equipment-type.model";
-import {_equipmentTypes} from "../equipment/equipmentType/in-memory-equipment-type.repository";
 
 export const _activities: Activity[] = [];
 
@@ -30,13 +28,5 @@ export class InMemoryActivityRepository implements ActivityRepository {
             throw new ActivityRepositoryException(ActivityRepositoryExceptionMessage.ACTIVITY_NOT_FOUND);
         }
         return _activities[index];
-    }
-
-    async getEquipmentTypesByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]> {
-        return _equipmentTypes
-            .filter(equipmentType => !equipmentType.deletedAt)
-            .filter(equipmentType => equipmentTypeIds
-                .some(equipmentTypeId => equipmentTypeId.value === equipmentType.id.value)
-            );
     }
 }

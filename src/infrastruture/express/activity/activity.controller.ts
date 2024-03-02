@@ -37,7 +37,7 @@ export class ActivityController {
             const description = req.body.description as string;
             const equipmentTypeIds = req.body.equipmentTypeIds as string[];
 
-            if(!name?.trim() || !description?.trim() || !equipmentTypeIds) return res.status(400).end();
+            if(!name?.trim() || !description?.trim()) return res.status(400).end();
 
             const createActivityDto = new CreateActivityDto(
                 name.trim(),
@@ -49,7 +49,6 @@ export class ActivityController {
                 const activity = await this.activityService.create(createActivityDto.name, createActivityDto.description, createActivityDto.equipmentTypeIds);
                 res.status(201).send(activity);
             } catch (e) {
-                console.log(e)
                 res.status(400).send(e);
             }
         }

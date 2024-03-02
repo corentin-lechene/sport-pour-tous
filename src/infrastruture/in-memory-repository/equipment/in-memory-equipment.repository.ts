@@ -17,6 +17,18 @@ export class InMemoryEquipmentRepository implements EquipmentRepository {
         return equipment;
     }
 
+    async getByIds(equipmentIds: EquipmentId[]): Promise<Equipment[]> {
+        const equipments = _equipments
+            .filter(equipment => !equipment.deletedAt)
+            .filter(equipment => equipmentIds
+                .some(equipmentId => equipmentId.value === equipment.id.value)
+            );
+        if (equipmentIds.length !== equipmentIds.length) {
+            throw new EquipmentRepositoryException(EquipmentRepositoryExceptionMessage.EQUIPMENT_NOT_FOUND);
+        }
+        return equipments;
+    }
+
     async create(equipment: Equipment): Promise<Equipment> {
         _equipments.push(equipment);
         return equipment;
@@ -24,7 +36,9 @@ export class InMemoryEquipmentRepository implements EquipmentRepository {
 
     async delete(id: EquipmentId): Promise<void> {
         const equipment = _equipments.find(equipment => equipment.id.value === id.value);
-        if (!equipment) {
+        if (!
+            equipment
+        ) {
             throw new EquipmentRepositoryException(EquipmentRepositoryExceptionMessage.EQUIPMENT_NOT_FOUND);
         }
         equipment.deletedAt = new Date();
