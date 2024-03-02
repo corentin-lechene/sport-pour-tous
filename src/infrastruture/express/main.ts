@@ -4,6 +4,7 @@ import * as dayjs from "dayjs";
 import {ConsoleLogger, LoggerService} from "../../common";
 import {EquipmentTypeRoute} from "./equipments/equipmentType/equipment-type.route";
 import {EquipmentRoute} from "./equipments/equipment.route";
+import {ActivityRoute} from "./activity/activity.route";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ export async function start_express() {
     // all routes
     app.use(await EquipmentTypeRoute.getRoutes());
     app.use(await EquipmentRoute.getRoutes());
+    app.use(await ActivityRoute.getRoutes());
 
     // populate for dev
     // ...

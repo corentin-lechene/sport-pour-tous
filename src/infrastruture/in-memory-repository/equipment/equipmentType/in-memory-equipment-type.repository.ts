@@ -26,6 +26,14 @@ export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository 
         return equipmentType;
     }
 
+    async getByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]> {
+        const equipmentTypes = _equipmentTypes.filter(equipmentType => equipmentTypeIds.includes(equipmentType.id));
+        if (equipmentTypes.length !== equipmentTypeIds.length) {
+            throw new EquipmentTypeException(EquipmentTypeMessageError.EQUIPMENT_TYPE_NOT_FOUND);
+        }
+        return equipmentTypes;
+    }
+
     async getByName(name: string): Promise<EquipmentType> {
         const equipmentType = _equipmentTypes.find(equipmentType => equipmentType.name === name);
         if (!equipmentType) {

@@ -2,14 +2,10 @@ import {EquipmentRepository} from "../../domain/equipment/equipment.repository";
 import {Equipment, EquipmentId} from "../../domain/equipment/equipment.model";
 import {EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-type.model";
 import {EquipmentException} from "./exception/equipment.exception";
-import {EquipmentTypeRepository} from "../../domain/equipment/equipmentType/equipment-type.repository";
 import {EquipmentMessageError} from "./exception/equipment.message-error";
 
 export class EquipmentService {
-    constructor(
-        private readonly equipmentRepository: EquipmentRepository,
-        private readonly equipmentTypeRepository: EquipmentTypeRepository
-    ) {
+    constructor(private readonly equipmentRepository: EquipmentRepository) {
         this.equipmentRepository = equipmentRepository;
     }
 
@@ -26,10 +22,11 @@ export class EquipmentService {
             throw new EquipmentException(EquipmentMessageError.ALL_FIELDS_MUST_BE_FILL);
         }
 
-        const equipmentType = await this.equipmentTypeRepository.getById(equipmentTypeId);
+        // todo
+        // const equipmentType = await this.equipmentTypeRepository.getById(equipmentTypeId);
 
-        const newEquipment = new Equipment(name, quantity, equipmentType);
-        return this.equipmentRepository.create(newEquipment);
+        // const newEquipment = new Equipment(name, quantity, equipmentType);
+        // return this.equipmentRepository.create(newEquipment);
     }
 
     async delete(equipmentId: EquipmentId) {
