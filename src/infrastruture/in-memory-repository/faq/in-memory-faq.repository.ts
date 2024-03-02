@@ -1,5 +1,5 @@
-import {FaqRepository} from "../../domain/faq/faq.repository";
-import {Faq} from "../../domain/faq/faq.model";
+import {FaqRepository} from "../../../domain/faq/faq.repository";
+import {Faq} from "../../../domain/faq/faq.model";
 
 export class InMemoryFaqRepository implements FaqRepository {
     create(faq: Faq): Promise<Faq> {

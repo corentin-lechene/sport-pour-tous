@@ -41,10 +41,13 @@ export class EquipmentController {
             const createEquipmentDto = new CreateEquipmentDto(name.trim(), quantity, new EquipmentTypeId(equipmentTypeId.trim()));
 
             try {
-                const equipment = await this.equipmentService.create(createEquipmentDto.name, createEquipmentDto.quantity, createEquipmentDto.equipmentTypeId);
+                const equipment = await this.equipmentService.create(
+                    createEquipmentDto.name,
+                    createEquipmentDto.quantity,
+                    createEquipmentDto.equipmentTypeId
+                );
                 res.status(201).send(equipment);
             } catch (e) {
-                console.log(e)
                 res.status(400).send(e);
             }
         }

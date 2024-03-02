@@ -1,33 +1,25 @@
-import {v4 as uuidv4} from "uuid";
-import {User} from "../client/user/user.model";
-
-export class SessionId {
-    value: string;
-
-    constructor(value: string = uuidv4()) {
-        this.value = value;
-    }
-}
+import {Place} from "../place/place.model";
+import {SessionId} from "./session-id";
+import {Activity} from "../activity/activity.model";
 
 export class Session {
-    id: SessionId;
-    max_participant: number; // todo: activity or session
+    readonly id: SessionId;
+    place: Place;
+    maxParticipant: number;
     name: string;
+    activity: Activity
     price: number;
     startAt: Date;
+    endAt: Date;
 
-    users: User[]
-
-    deletedAt?: Date;
-    createdAt?: Date;
-
-
-    constructor(max_participant: number, name: string, price: number, startAt: Date, users: User[]) {
+    constructor(name: string, price: number, place: Place, maxParticipant: number, startAt: Date, endAt: Date, activity: Activity) {
         this.id = new SessionId();
-        this.max_participant = max_participant;
+        this.place = place;
         this.name = name;
+        this.activity = activity
         this.price = price;
+        this.maxParticipant = maxParticipant;
         this.startAt = startAt;
-        this.users = users;
+        this.endAt = endAt;
     }
 }

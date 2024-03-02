@@ -5,5 +5,5 @@ export interface EquipmentRepository {
     getById(id: EquipmentId): Promise<Equipment>;
     create(equipment: Equipment): Promise<Equipment>;
     delete(id: EquipmentId): Promise<void>;
-    getByIds(equipmentIds: EquipmentId[]): Promise<Equipment[]>
+    getByIds(equipmentIds: EquipmentId[]): Promise<Equipment[]>;
 }

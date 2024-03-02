@@ -1,7 +1,9 @@
 import * as express from "express";
 import {EquipmentTypeController} from "./equipment-type.controller";
 import {EquipmentTypeService} from "../../../../application/equipment/equipmentType/equipment-type.service";
-import {InMemoryEquipmentTypeRepository} from "../../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
+import {
+    InMemoryEquipmentTypeRepository
+} from "../../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
 
 
 export class EquipmentTypeRoute {

@@ -2,10 +2,15 @@ import {EquipmentType, EquipmentTypeId} from "../../../domain/equipment/equipmen
 import {EquipmentTypeException} from "./exception/equipment-type.exception";
 import {EquipmentTypeMessageError} from "./exception/equipment-type.message-error";
 import {EquipmentTypeRepository} from "../../../domain/equipment/equipmentType/equipment-type.repository";
+import {IEquipmentTypeService} from "./activity.service-interface";
 
-export class EquipmentTypeService {
+export class EquipmentTypeService implements IEquipmentTypeService {
     constructor(private readonly equipmentTypeRepository: EquipmentTypeRepository) {
         this.equipmentTypeRepository = equipmentTypeRepository;
+    }
+
+    getEquipmentTypesByIds(equipmentTypeIds: EquipmentTypeId[]): Promise<EquipmentType[]> {
+        return this.equipmentTypeRepository.getByIds(equipmentTypeIds);
     }
 
     async getAll(): Promise<EquipmentType[]> {
@@ -44,5 +49,9 @@ export class EquipmentTypeService {
 
     async delete(equipmentTypeId: EquipmentTypeId): Promise<void> {
         return this.equipmentTypeRepository.delete(equipmentTypeId);
+    }
+
+    getEquipmentById(equipmentTypeId: EquipmentTypeId): Promise<EquipmentType> {
+        return this.equipmentTypeRepository.getById(equipmentTypeId);
     }
 }
