@@ -8,7 +8,9 @@ import {ExtraFormula} from "../../domain/formula/extends/extra.formule";
 import {IEquipmentService} from "../equipment/equipment.service.interface";
 import {Equipment, EquipmentId} from "../../domain/equipment/equipment.model";
 import {IFormulaService} from "./formula.service.interface";
+import {EquipmentException} from "../equipment/exception/equipment.exception";
 
+// pattern stratégie + factory
 interface FormulaCreationStrategy {
     createFormula(field: string, equipments: string[], extras: string[]): Formula;
 }
@@ -72,7 +74,11 @@ export class FormulaService implements IFormulaService {
         try {
             return await this.IEquipmentService.getByIds(equipmentIds);
         } catch (e) {
-            throw new Error("Une erreur est survenue lors du chargement des équipements : " + e);
+            if(e instanceof EquipmentException) {
+                throw new Error(e.message);
+            }
+
+            throw new FormulaException(FormulaMessageException.BAD_FORMULA);
         }
     }
 
