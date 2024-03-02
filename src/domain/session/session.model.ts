@@ -12,6 +12,8 @@ export class Session {
     startAt: Date;
     endAt: Date;
 
+    deletedAt?: Date;
+
     constructor(name: string, price: number, place: Place, maxParticipant: number, startAt: Date, endAt: Date, activity: Activity) {
         this.id = new SessionId();
         this.place = place;

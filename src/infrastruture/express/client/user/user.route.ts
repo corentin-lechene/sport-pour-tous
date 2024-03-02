@@ -1,34 +1,10 @@
 import * as express from "express";
 import {UserController} from "./user.controller";
-import {UserService} from "../../../../application/client/user/user.service";
-import {InMemoryUserRepository} from "../../../in-memory-repository/client/user/in-memory-user.repository";
-import {InvoiceService} from "../../../../application/client/invoice/invoice.service";
-import {InMemoryInvoiceRepository} from "../../../in-memory-repository/invoice/in-memory-invoice.repository";
-import {SessionService} from "../../../../application/session/session.service";
-import {GuaranteeService} from "../../../../application/client/guarantee/guarantee.service";
-import {InMemoryGuaranteeRepository} from "../../../in-memory-repository/guarantee/in-memory-guarantee.repository";
-import {FormulaService} from "../../../../application/formula/formula.service";
-import {InMemoryFormulaRepository} from "../../../in-memory-repository/formula/in-memory-formula.repository";
-import {EquipmentService} from "../../../../application/equipment/equipment.service";
-import {InMemoryEquipmentRepository} from "../../../in-memory-repository/equipment/in-memory-equipment.repository";
-import {InMemoryEquipmentTypeRepository} from "../../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
+import { userService} from "../../../../application.configuration";
 export class UserRoute {
     static async getRoutes() {
         const router = express.Router();
-
-        const userController = new UserController (
-            new UserService (
-                new InMemoryUserRepository(),
-                new InvoiceService(new InMemoryInvoiceRepository()),
-                new SessionService(),
-                new GuaranteeService(new InMemoryGuaranteeRepository()),
-                new FormulaService(new InMemoryFormulaRepository(), new EquipmentService(
-                    new InMemoryEquipmentRepository(), new InMemoryEquipmentTypeRepository()))
-
-            ) // todo: other way
-        );
-
-        //todo : get all employees from company
+        const userController = new UserController(userService);
 
         router.get("/users", await userController.getAll());
         router.get("/users/:userId", await userController.getById());

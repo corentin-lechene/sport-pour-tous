@@ -2,7 +2,7 @@ import {InvoiceRepository} from "../../../domain/client/invoice/invoice.reposito
 import {Invoice, InvoiceId, Status} from "../../../domain/client/invoice/invoice.model";
 import {UserId} from "../../../domain/client/user/user.model";
 import {InvoiceExceptionRepository, InvoiceMessageExceptionRepository} from "./invoice.exception.repository";
-import {SessionId} from "../../../domain/session/session.model";
+import {SessionId} from "../../../domain/session/session-id";
 
 const _invoices: Invoice[] = []
 

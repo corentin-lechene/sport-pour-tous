@@ -5,13 +5,13 @@ import {UserException, UserMessageException} from "./user.exception";
 import {CreateUserDto} from "../../../infrastruture/express/client/user/create-user.dto";
 import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-user.dto";
 import {IInvoiceService} from "../invoice/invoice.service.interface";
-import {Session, SessionId} from "../../../domain/session/session.model";
 import {ISessionService} from "../../session/session.service.interface";
 import {IGuaranteeService} from "../guarantee/guarantee.service.interface";
 import {FormulaData} from "../../../infrastruture/express/formula/formula-data";
 import {IFormulaService} from "../../formula/formula.service.interface";
 import * as dayjs from "dayjs";
 import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
+import {SessionId} from "../../../domain/session/session-id";
 
 export class UserService {
 
@@ -101,8 +101,8 @@ export class UserService {
         const user = await this.userRepository.getById(userId);
 
         // get session
-        const session = new Session(10, "toto", 10, new Date(), []);
-        // const session = await this.ISessionService.getById(sessionId);
+        // const session = new Session(10, "toto", 10, new Date(), []);
+        const session = await this.ISessionService.fetchById(sessionId);
 
         //get formula
         const formula = await this.IFormulaService.create(formulaData);
@@ -126,7 +126,7 @@ export class UserService {
     async unsubscribeToSession(userId: UserId, sessionId: SessionId) {
         const user = await this.userRepository.getById(userId);
 
-        const session = await this.ISessionService.getById(sessionId);
+        const session = await this.ISessionService.fetchById(sessionId);
 
         // si c'est avant
         const now = dayjs();

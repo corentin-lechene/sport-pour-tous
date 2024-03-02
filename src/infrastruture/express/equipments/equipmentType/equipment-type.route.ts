@@ -1,15 +1,12 @@
 import * as express from "express";
 import {EquipmentTypeController} from "./equipment-type.controller";
-import {EquipmentTypeService} from "../../../../application/equipment/equipmentType/equipment-type.service";
-import {
-    InMemoryEquipmentTypeRepository
-} from "../../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
+import {equipmentTypeService} from "../../../../application.configuration";
 
 
 export class EquipmentTypeRoute {
     static async getRoutes() {
         const router = express.Router();
-        const equipmentTypeController = new EquipmentTypeController(new EquipmentTypeService(new InMemoryEquipmentTypeRepository()));
+        const equipmentTypeController = new EquipmentTypeController(equipmentTypeService);
 
         router.get("/equipment-types", await equipmentTypeController.getAll());
         router.get("/equipment-types/:equipmentTypeId", await equipmentTypeController.getById());

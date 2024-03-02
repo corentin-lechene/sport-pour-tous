@@ -1,12 +1,11 @@
 import * as express from "express";
 import {FieldController} from "./field.controller";
-import {FieldService} from "../../../application/place/field/field.service";
-import {InMemoryFieldRepository} from "../../in-memory-repository/in-memory-field.repository";
+import {fieldService} from "../../../../application.configuration";
 
 export class FieldRoute {
     static async getRoutes() {
         const router = express.Router();
-        const fieldController = new FieldController(new FieldService(new InMemoryFieldRepository()));
+        const fieldController = new FieldController(fieldService);
 
         router.get("/fields", await fieldController.fetchAll());
         router.get("/fields/:fieldId", await fieldController.fetchById());

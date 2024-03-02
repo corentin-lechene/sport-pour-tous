@@ -5,7 +5,7 @@ import {ConsoleLogger, LoggerService} from "../../common";
 import {EquipmentTypeRoute} from "./equipments/equipmentType/equipment-type.route";
 import {EquipmentRoute} from "./equipments/equipment.route";
 import {ActivityRoute} from "./activity/activity.route";
-import {FieldRoute} from "./field/field.route";
+import {FieldRoute} from "./place/field/field.route";
 import {PlaceRoute} from "./place/place.route";
 import {SessionRoute} from "./session/session.route";
 import {UserRoute} from "./client/user/user.route";

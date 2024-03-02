@@ -7,9 +7,11 @@ import {Place} from "../../domain/place/place.model";
 import dayjs from "../../../config/dayjs.config";
 import {Activity, ActivityId} from "../../domain/activity/activity.model";
 import {ActivityService} from "../activity/activity.service";
+import {ISessionService} from "./session.service.interface";
+import {User, UserId} from "../../domain/client/user/user.model";
 
-export class SessionService {
-    constructor(private sessionRepository: SessionRepository, private activityService: ActivityService) {}
+export class SessionService implements ISessionService{
+    constructor(private readonly sessionRepository: SessionRepository, private readonly activityService: ActivityService) {}
 
     async fetchAll(): Promise<Session[]> {
         try {
@@ -109,4 +111,14 @@ export class SessionService {
             throw new SessionException(SessionMessage.ERROR_OCCURRED);
         }
     }
+
+    async addUser(sessionId: SessionId, user: User): Promise<void> {
+        throw new Error("not implemented");
+    }
+
+    deleteUser(sessionId: SessionId, userId: UserId): Promise<void> {
+        throw new Error("not implemented");
+    }
+
+
 }

@@ -8,10 +8,10 @@ import {PhoneNumber} from "../../../../common/vo/phoneNumber/phoneNumber";
 import {UserException} from "../../../../application/client/user/user.exception";
 import {PhoneNumberException} from "../../../../common/vo/phoneNumber/phoneNumber.exception";
 import {UpdateUserDto} from "./update-user.dto";
-import {SessionId} from "../../../../domain/session/session.model";
 import {FormulaData} from "../../formula/formula-data";
 import {FormulaException} from "../../../../application/formula/formula.exception";
 import {SessionException} from "../../../../application/session/session.exception";
+import {SessionId} from "../../../../domain/session/session-id";
 
 export class UserController {
     constructor(private readonly userService: UserService) {

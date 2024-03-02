@@ -1,17 +1,10 @@
 import * as express from "express";
 import {PlaceController} from "./place.controller";
-import {PlaceService} from "../../../application/place/place.service";
-import {InMemoryPlaceRepository} from "../../in-memory-repository/in-memory-place.repository";
-import {FieldService} from "../../../application/place/field/field.service";
-import {InMemoryFieldRepository} from "../../in-memory-repository/in-memory-field.repository";
+import {placeService} from "../../../application.configuration";
 
 export class PlaceRoute {
     static async getRoutes () {
         const router = express.Router();
-        const placeRepository = new InMemoryPlaceRepository();
-        const fieldRepository = new InMemoryFieldRepository();
-        const fieldService = new FieldService(fieldRepository);
-        const placeService = new PlaceService(placeRepository, fieldService);
         const placeController = new PlaceController(placeService);
         
         router.get("/places", await placeController.fetchAll());

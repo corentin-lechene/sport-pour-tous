@@ -1,10 +1,9 @@
-import {FieldService} from "../../../application/place/field/field.service";
+import {FieldService} from "../../../../application/place/field/field.service";
 import {RequestHandler} from "express";
-import {FieldId} from "../../../domain/place/field/field-id";
-import {FieldType} from "../../../domain/place/field/field-type.enum";
-import {FieldException} from "../../../application/place/field/exception/field.exception";
-import {FieldMessage} from "../../../application/place/field/exception/field.message";
-import {PlaceId} from "../../../domain/place/place-id";
+import {FieldId} from "../../../../domain/place/field/field-id";
+import {FieldType} from "../../../../domain/place/field/field-type.enum";
+import {FieldException} from "../../../../application/place/field/exception/field.exception";
+import {FieldMessage} from "../../../../application/place/field/exception/field.message";
 
 export class FieldController {
     constructor(private readonly fieldService: FieldService) {

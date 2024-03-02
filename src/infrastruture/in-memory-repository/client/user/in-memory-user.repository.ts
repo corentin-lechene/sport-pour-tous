@@ -3,7 +3,8 @@ import {UserRepository} from "../../../../domain/client/user/user.repository";
 import {Email} from "../../../../common/vo/email/email";
 import {PhoneNumber} from "../../../../common/vo/phoneNumber/phoneNumber";
 import {UserExceptionRepository, UserMessageExceptionRepository} from "./user.exception.repository";
-import {Session, SessionId} from "../../../../domain/session/session.model";
+import {Session} from "../../../../domain/session/session.model";
+import {SessionId} from "../../../../domain/session/session-id";
 
 const _users: User[] = []
 
