@@ -1,9 +1,9 @@
-import {EquipmentType, EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-type.model";
-import {EquipmentTypeRepository} from "../../domain/equipment/equipmentType/equipment-type.repository";
-import {EquipmentTypeException} from "../../application/equipment/equipmentType/exception/equipment-type.exception";
+import {EquipmentType, EquipmentTypeId} from "../../../../domain/equipment/equipmentType/equipment-type.model";
+import {EquipmentTypeRepository} from "../../../../domain/equipment/equipmentType/equipment-type.repository";
+import {EquipmentTypeException} from "../../../../application/equipment/equipmentType/exception/equipment-type.exception";
 import {
     EquipmentTypeMessageError
-} from "../../application/equipment/equipmentType/exception/equipment-type.message-error";
+} from "../../../../application/equipment/equipmentType/exception/equipment-type.message-error";
 
 const _equipmentTypes: EquipmentType[] = []
 export class InMemoryEquipmentTypeRepository implements EquipmentTypeRepository {

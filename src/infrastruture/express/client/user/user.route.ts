@@ -10,8 +10,8 @@ import {InMemoryGuaranteeRepository} from "../../../in-memory-repository/guarant
 import {FormulaService} from "../../../../application/formula/formula.service";
 import {InMemoryFormulaRepository} from "../../../in-memory-repository/formula/in-memory-formula.repository";
 import {EquipmentService} from "../../../../application/equipment/equipment.service";
-import {InMemoryEquipmentRepository} from "../../../in-memory-repository/in-memory-equipment.repository";
-import {InMemoryEquipmentTypeRepository} from "../../../in-memory-repository/in-memory-equipment-type.repository";
+import {InMemoryEquipmentRepository} from "../../../in-memory-repository/equipment/in-memory-equipment.repository";
+import {InMemoryEquipmentTypeRepository} from "../../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
 export class UserRoute {
     static async getRoutes() {
         const router = express.Router();
@@ -38,7 +38,6 @@ export class UserRoute {
         router.patch("/users/:userId", await userController.update());
         router.patch("/users/password/:userId", await userController.updatePassword());
         router.get("/users/invoices/:userId", await userController.getInvoices());
-
 
         router.post("/users/:userId/subscribe-session/:sessionId", await userController.subscribeSession());
         router.post("/users/:userId/unsubscribeSession/:sessionId", await userController.unsubscribeSession());

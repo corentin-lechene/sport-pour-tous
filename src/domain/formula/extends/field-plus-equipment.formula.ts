@@ -4,7 +4,7 @@ import {Equipment} from "../../equipment/equipment.model";
 const FORMULA_NAME = "Field Location + Equipments";
 const FORMULA_DESCRIPTION = "Field Location + Equipments";
 const FORMULA_PRICE = 20;
-export class FieldPlusMaterialFormula extends Formula {
+export class FieldPlusEquipmentFormula extends Formula {
     field: string;
     equipments: string[] | Equipment[];
 

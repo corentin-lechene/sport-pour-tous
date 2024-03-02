@@ -18,7 +18,7 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
     }
 
     async getAllByUser(userId: UserId): Promise<Invoice[]> {
-        return _invoices.filter(invoice => invoice.userId.value === userId.value);
+        return _invoices.filter(invoice => invoice.user.id.value === userId.value);
     }
 
     async create(invoice: Invoice): Promise<Invoice> {
@@ -28,7 +28,7 @@ export class InMemoryInvoiceRepository implements InvoiceRepository {
     }
 
     async getByUserAndSession(userId: UserId, sessionId: SessionId): Promise<Invoice | undefined> {
-        return  _invoices.find(invoice => invoice.userId.value === userId.value && invoice.sessionId.value === sessionId.value);
+        return _invoices.find(invoice => invoice.user.id.value === userId.value && invoice.session.id.value === sessionId.value);
     }
 
     async delete(invoiceId: InvoiceId): Promise<void> {

@@ -1,8 +1,8 @@
 import * as express from "express";
 import {EquipmentController} from "./equipment.controller";
 import {EquipmentService} from "../../../application/equipment/equipment.service";
-import {InMemoryEquipmentRepository} from "../../in-memory-repository/in-memory-equipment.repository";
-import {InMemoryEquipmentTypeRepository} from "../../in-memory-repository/in-memory-equipment-type.repository";
+import {InMemoryEquipmentRepository} from "../../in-memory-repository/equipment/in-memory-equipment.repository";
+import {InMemoryEquipmentTypeRepository} from "../../in-memory-repository/equipment/equipmentType/in-memory-equipment-type.repository";
 
 export class EquipmentRoute {
     static async getRoutes() {

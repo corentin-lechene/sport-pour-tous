@@ -26,7 +26,8 @@ export class User {
     createdAt?: Date;
 
 
-    constructor(firstname: string, lastname: string, email: Email, password: string, address: string, phoneNumber: PhoneNumber, isFirstTime: boolean) {
+    constructor(firstname: string, lastname: string, email: Email, password: string, address: string,
+                phoneNumber: PhoneNumber, isFirstTime: boolean, sessions: Session[]) {
         this.id = new UserId();
         this.firstname = firstname;
         this.lastname = lastname;
@@ -35,5 +36,6 @@ export class User {
         this.address = address; // todo : VO ??
         this.phoneNumber = phoneNumber.getPhoneNumber;
         this.isFirstTime = isFirstTime;
+        this.sessions = sessions;
     }
 }

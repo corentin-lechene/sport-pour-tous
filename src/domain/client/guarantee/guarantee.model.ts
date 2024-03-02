@@ -1,5 +1,6 @@
 import {v4 as uuidv4} from "uuid";
-import {FieldPlusMaterialFormula} from "../../formula/extends/field-plus-material.formula";
+import {FieldPlusEquipmentFormula} from "../../formula/extends/field-plus-equipment.formula";
+import {User} from "../user/user.model";
 
 export type GuaranteeType = "materials" | "bank";
 
@@ -15,17 +16,19 @@ export class Guarantee {
     id: GuaranteeId;
     amount: number;
     type: GuaranteeType;
-    formula?: FieldPlusMaterialFormula
+    formula?: FieldPlusEquipmentFormula
+    user: User;
     // todo: equipment ??
 
     deletedAt?: Date;
     createdAt?: Date;
 
 
-    constructor(amount: number, type: GuaranteeType, formula?: FieldPlusMaterialFormula) {
+    constructor(amount: number, type: GuaranteeType, user: User, formula?: FieldPlusEquipmentFormula) {
         this.id = new GuaranteeId();
         this.amount = amount;
         this.type = type;
+        this.user = user;
         if(formula) this.formula = formula;
     }
 }

@@ -5,18 +5,13 @@ import {UserException, UserMessageException} from "./user.exception";
 import {CreateUserDto} from "../../../infrastruture/express/client/user/create-user.dto";
 import {UpdateUserDto} from "../../../infrastruture/express/client/user/update-user.dto";
 import {IInvoiceService} from "../invoice/invoice.service.interface";
-import {SessionId} from "../../../domain/session/session.model";
+import {Session, SessionId} from "../../../domain/session/session.model";
 import {ISessionService} from "../../session/session.service.interface";
 import {IGuaranteeService} from "../guarantee/guarantee.service.interface";
 import {FormulaData} from "../../../infrastruture/express/formula/formula-data";
-import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
-import {FieldPlusMaterialFormula} from "../../../domain/formula/extends/field-plus-material.formula";
 import {IFormulaService} from "../../formula/formula.service.interface";
-import {SessionException} from "../../session/session.exception";
-import {GuaranteeException} from "../guarantee/guarantee.exception";
-import {FormulaException} from "../../formula/formula.exception";
 import * as dayjs from "dayjs";
-import {InvoiceException} from "../invoice/invoice.exception";
+import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
 
 export class UserService {
 
@@ -28,10 +23,6 @@ export class UserService {
         private readonly IFormulaService: IFormulaService,
     ) {
         this.userRepository = userRepository;
-        this.IInvoiceService = IInvoiceService;
-        this.ISessionService = ISessionService;
-        this.IGuaranteeService = IGuaranteeService;
-        this.IFormulaService = IFormulaService;
     }
     async getAll(): Promise<User[]> {
         return this.userRepository.getAll();
@@ -58,7 +49,7 @@ export class UserService {
         }
 
         const user = new User(createUserDto.firstname, createUserDto.lastname, createUserDto.email,
-            createUserDto.password, createUserDto.address, createUserDto.phoneNumber, true);
+            createUserDto.password, createUserDto.address, createUserDto.phoneNumber, true, []);
         return this.userRepository.create(user)
     }
 
@@ -108,84 +99,51 @@ export class UserService {
 
     async subscribeToSession(userId: UserId, sessionId: SessionId, formulaData: FormulaData) {
         const user = await this.userRepository.getById(userId);
-        if(!user) {
-            throw new UserException(UserMessageException.USER_NOT_FOUND)
-        }
 
-        try {
-            const session = await this.ISessionService.getById(sessionId);
-            const formula = await this.IFormulaService.create(formulaData);
+        // get session
+        const session = new Session(10, "toto", 10, new Date(), []);
+        // const session = await this.ISessionService.getById(sessionId);
 
-            const guarantees: Guarantee[] = [];
-            if(user.isFirstTime) {
-                const guarantee = await this.IGuaranteeService.createBankGuarantee();
-                guarantees.push(guarantee);
-            }
-            if(formula instanceof FieldPlusMaterialFormula) {
-                const guarantee = await this.IGuaranteeService.createMaterialGuarantee(formula);
-                guarantees.push(guarantee);
-            }
+        //get formula
+        const formula = await this.IFormulaService.create(formulaData);
 
-            const guaranteeTotal = guarantees.reduce((total, g) => total + (g.amount || 0), 0);
-            const totalPrice = session.price + guaranteeTotal + formula.price;
-            await this.IInvoiceService.create(user.id, session.id, session.price, totalPrice, guarantees);
-            await this.userRepository.addSession(user.id, session);
-            await this.ISessionService.addUser(session.id, user);
+        // get guarantees
+        const guarantees: Guarantee[] = await this.IGuaranteeService.getAboutSubscription(formula, user);
+        const guaranteeTotal = guarantees.reduce((acc, guarantee) => acc + guarantee.amount, 0)
 
-        } catch (e) {
-            if(e instanceof SessionException) {
-                throw new UserException(UserMessageException.SESSION_ERROR);
-            }
+        // create invoice
+        const totalPrice = session.price + guaranteeTotal + formula.price;
+        await this.IInvoiceService.create(user, session, session.price, totalPrice, guarantees);
 
-            if(e instanceof GuaranteeException) {
-                throw new UserException(UserMessageException.GUARANTEE_ERROR);
-            }
+        // subscribe
+        await this.userRepository.addSession(user.id, session);
+        await this.ISessionService.addUser(session.id, user);
 
-            if(e instanceof FormulaException) {
-                throw new UserException(UserMessageException.FORMULA_ERROR)
-            }
-        }
 
         // todo: via mail or sms send a confirmation
     }
 
     async unsubscribeToSession(userId: UserId, sessionId: SessionId) {
         const user = await this.userRepository.getById(userId);
-        if(!user) {
-            throw new UserException(UserMessageException.USER_NOT_FOUND)
-        }
 
-        try {
-            const session = await this.ISessionService.getById(sessionId);
+        const session = await this.ISessionService.getById(sessionId);
 
-            const now = dayjs(new Date());
-            const sessionStart = dayjs(session.startAt);
+        // si c'est avant
+        const now = dayjs();
+        const sessionStart = dayjs(session.startAt);
 
-            if(sessionStart.diff(now, 'hours') > 2) {
-                const invoice = await this.IInvoiceService.getBySessionAndUser(session.id, user.id);
-                if(invoice) {
-                    const guarantees = invoice.guarantees;
-                    guarantees.map(async guarantee => await this.IGuaranteeService.delete(guarantee.id));
-                    await this.IInvoiceService.delete(invoice.id);
-                }
-            }
-
-            await this.userRepository.deleteSession(user.id, session.id);
-            await this.ISessionService.deleteUser(session.id, user.id);
-
-        } catch (e) {
-            if(e instanceof SessionException) {
-                throw new UserException(UserMessageException.SESSION_ERROR);
-            }
-
-            if(e instanceof InvoiceException) {
-                throw new UserException(UserMessageException.INVOICE_ERROR);
-            }
-
-            if(e instanceof GuaranteeException) {
-                throw new UserException(UserMessageException.GUARANTEE_ERROR);
+        if(sessionStart.diff(now, 'hours') > 2) {
+            const invoice = await this.IInvoiceService.getBySessionAndUser(session.id, user.id);
+            if(invoice) {
+                const guarantees = invoice.guarantees;
+                guarantees.map(async guarantee => await this.IGuaranteeService.delete(guarantee.id));
+                await this.IInvoiceService.delete(invoice.id);
             }
         }
+
+        await this.userRepository.deleteSession(user.id, session.id);
+        await this.ISessionService.deleteUser(session.id, user.id);
+
     }
 
     // getAllGuarantees(userId)

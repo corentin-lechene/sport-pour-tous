@@ -11,6 +11,7 @@ import {UpdateUserDto} from "./update-user.dto";
 import {SessionId} from "../../../../domain/session/session.model";
 import {FormulaData} from "../../formula/formula-data";
 import {FormulaException} from "../../../../application/formula/formula.exception";
+import {SessionException} from "../../../../application/session/session.exception";
 
 export class UserController {
     constructor(private readonly userService: UserService) {
@@ -172,22 +173,27 @@ export class UserController {
             if (!userId?.trim() || !sessionId?.trim()) return res.status(400).end();
 
             // formula
-            const field = req.body.formulaType.field as string;
-            const equipmentIds = req.body.formulaType.equipmentsIds as string[];
-            const extrasIds = req.body.formulaType.extrasIds as string[];
+            const formula = req.body.formula as FormulaData;
+            if(!formula) return res.status(400).end();
 
-            if(!field.trim() || !equipmentIds || !extrasIds) return res.status(400).end();
+            const field = req.body.formula.field as string;
+            const equipmentIds = req.body.formula.equipmentsIds as string[];
+            const extrasIds = req.body.formula.extrasIds as string[];
+
+            if(!field?.trim() || !equipmentIds || !extrasIds) return res.status(400).end();
+
             const formulaData = new FormulaData(field, equipmentIds, extrasIds);
 
             try {
                 await this.userService.subscribeToSession(new UserId(userId.trim()), new SessionId(sessionId.trim()), formulaData);
-                // todo: faire payer le invoice
-
-                res.status(200).send();
+                res.status(204).send();
             } catch (e) {
-                if(e instanceof UserException || e instanceof FormulaException) {
+
+                if(e instanceof UserException || e instanceof FormulaException || e instanceof SessionException || e instanceof Error) {
                     res.statusMessage = e.message;
+                    res.status(400).send();
                 }
+
                 res.status(404).send();
             }
         }

@@ -1,9 +1,9 @@
 import {InvoiceRepository} from "../../../domain/client/invoice/invoice.repository";
-import {UserId} from "../../../domain/client/user/user.model";
+import {User, UserId} from "../../../domain/client/user/user.model";
 import {IInvoiceService} from "./invoice.service.interface";
 import {InvoiceException, InvoiceMessageException} from "./invoice.exception";
 import {Invoice, InvoiceId, Status} from "../../../domain/client/invoice/invoice.model";
-import {SessionId} from "../../../domain/session/session.model";
+import {Session, SessionId} from "../../../domain/session/session.model";
 import {Guarantee} from "../../../domain/client/guarantee/guarantee.model";
 
 export class InvoiceService implements IInvoiceService {
@@ -19,17 +19,17 @@ export class InvoiceService implements IInvoiceService {
         return this.invoiceRepository.getById(invoiceId);
     }
 
-    async create(userId: UserId, sessionId: SessionId, amount: number, total: number, guarantee: Guarantee[]) {
+    async create(user: User, session: Session, amount: number, total: number, guarantee: Guarantee[]) {
          if(amount <= 0) {
              throw new InvoiceException(InvoiceMessageException.AMOUNT_ZERO_OR_LOWER);
          }
 
-        const invoiceExisted = await this.invoiceRepository.getByUserAndSession(userId ,sessionId)
+        const invoiceExisted = await this.invoiceRepository.getByUserAndSession(user.id ,session.id)
         if(invoiceExisted) {
             throw new InvoiceException(InvoiceMessageException.INVOICE_ALREADY_EXIST_FOR_THE_USER_AND_SESSION);
         }
 
-         const invoice = new Invoice(userId, amount, total, Status.NOT_PAYED, guarantee);
+         const invoice = new Invoice(user, session, amount, total, Status.NOT_PAYED, guarantee);
          return this.invoiceRepository.create(invoice);
     }
 

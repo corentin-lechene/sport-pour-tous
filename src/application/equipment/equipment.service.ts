@@ -1,10 +1,9 @@
 import {EquipmentRepository} from "../../domain/equipment/equipment.repository";
 import {Equipment, EquipmentId} from "../../domain/equipment/equipment.model";
 import {EquipmentTypeId} from "../../domain/equipment/equipmentType/equipment-type.model";
-import {EquipmentException} from "./exception/equipment.exception";
 import {EquipmentTypeRepository} from "../../domain/equipment/equipmentType/equipment-type.repository";
-import {EquipmentMessageError} from "./exception/equipment.message-error";
 import {IEquipmentService} from "./equipment.service.interface";
+import {EquipmentException, EquipmentMessageError} from "./equipment.exception";
 
 export class EquipmentService implements IEquipmentService {
     constructor(
@@ -38,6 +37,6 @@ export class EquipmentService implements IEquipmentService {
     }
 
     async getByIds(equipmentIds: EquipmentId[]): Promise<Equipment[]> {
-        throw new Error("Not implemented");
+        return this.equipmentRepository.getByIds(equipmentIds);
     }
 }

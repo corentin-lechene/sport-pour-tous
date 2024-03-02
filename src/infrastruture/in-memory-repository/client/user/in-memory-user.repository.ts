@@ -12,7 +12,7 @@ export class InMemoryUserRepository implements UserRepository {
     constructor() {
         const defaultMail = Email.of("t@stark.com");
         const defaultPhoneNumber = PhoneNumber.of("+33601020304");
-        const defaultUser = new User("Tony", "Stark", defaultMail, "toto", "1 rue New York", defaultPhoneNumber, true)
+        const defaultUser = new User("Tony", "Stark", defaultMail, "toto", "1 rue New York", defaultPhoneNumber, true, [])
         _users.push(defaultUser)
     }
     async getAll(): Promise<User[]> {

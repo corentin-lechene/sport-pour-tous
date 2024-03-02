@@ -20,4 +20,14 @@ export class Session {
 
     deletedAt?: Date;
     createdAt?: Date;
+
+
+    constructor(max_participant: number, name: string, price: number, startAt: Date, users: User[]) {
+        this.id = new SessionId();
+        this.max_participant = max_participant;
+        this.name = name;
+        this.price = price;
+        this.startAt = startAt;
+        this.users = users;
+    }
 }
